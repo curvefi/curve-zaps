@@ -1,0 +1,20 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "swap_address": "0xfd5db7463a3ab53fd211b4af195c5bccc1a03890",
+    "lp_token_address": "0xfd5db7463a3ab53fd211b4af195c5bccc1a03890",
+    "gauge_addresses": ["0xe8060Ad8971450E624d5289A10017dD30F5dA85F"],
+    "coins": [
+        {
+            "name": "EURT",
+            "decimals": 6,
+            "tethered": true,
+            "underlying_address": "0xC581b735A1688071A1746c968e0798D642EDE491"
+        },
+        {
+            "name": "sEUR",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0xD71eCFF9342A5Ced620049e616c5035F1dB98620"
+        }
+    ]
+}

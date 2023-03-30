@@ -1,0 +1,22 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "pool_types": ["oracleRate"],
+    "wrapped_contract": "oraclePrice",
+    "swap_address": "0xB90B9B1F91a01Ea22A182CD84C1E22222e39B415",
+    "lp_token_address": "0xEfDE221f306152971D8e9f181bFe998447975810",
+    "gauge_addresses": ["0xD53cCBfED6577d8dc82987e766e75E3cb73a8563"],
+    "coins": [
+        {
+            "name": "ETH",
+            "decimals": 18,
+            "underlying_address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+        },
+        {
+            "name": "wstETH",
+            "decimals": 18,
+            "underlying_address": "0x1f32b1c2345538c0c6f582fcb022739c4a194ebb",
+            "underlying_interface": "OptimismBridgeToken2",
+            "use_rate": true
+        }
+    ]
+}

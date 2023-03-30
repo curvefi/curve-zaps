@@ -1,0 +1,23 @@
+{
+    "base_pool": "3pool",
+    "pool_types": ["meta", "factory"],
+    "swap_address": "0xecd5e75afb02efa118af914515d6521aabd189f1",
+    "lp_token_address": "0xecd5e75afb02efa118af914515d6521aabd189f1",
+    "zap_address": "0xA79828DF1850E8a3A3064576f380D90aECDD3359",
+    "gauge_addresses": ["0x359FD5d6417aE3D8D6497d9B2e7A890798262BA4"],
+    "lp_contract": "CurveTokenV2",
+    "coins": [
+        {
+            "name": "TUSD",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0x0000000000085d4780B73119b644AE5ecd22b376"
+        },
+        {
+            "name": "3CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490"
+        }
+    ]
+}

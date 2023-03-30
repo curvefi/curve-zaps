@@ -1,0 +1,24 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "wrapped_contract": "WETH",
+    "swap_address": "0xB576491F1E6e5E62f1d8F26062Ee822B40B0E0d4",
+    "lp_token_address": "0x3A283D9c08E8b55966afb64C515f5143cf907611",
+    "gauge_addresses": ["0x7E1444BA99dcdFfE8fBdb42C02F0005D14f13BE1"],
+    "coins": [
+        {
+            "name": "WETH",
+            "underlying_name": "ETH",
+            "decimals": 18,
+            "tethered": false,
+            "wrapped_decimals": 18,
+            "underlying_address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "wrapped_address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+        },
+        {
+            "name": "CVX",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0x4e3fbd56cd56c3e72c1403e103b45db9da5b9d2b"
+        }
+    ]
+}
