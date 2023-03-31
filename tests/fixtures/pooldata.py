@@ -29,16 +29,22 @@ def wrapped_decimals(pool_data):
 
 
 @pytest.fixture(scope="module")
-def wrapped_amounts_to_mint(pool_data, wrapped_decimals):
+def wrapped_amounts_to_mint(pool_data, wrapped_decimals, network):
     amt = 10 ** 6
-    if pool_data["id"] in ["busd", "dusd"]:
-        amt = 10 ** 5
-    if pool_data["id"] in ["sbtc", "ren"]:
-        amt = 10 ** 2
-    if pool_data["id"] == "aeth":
-        amt = 10 ** 2
-    if pool_data["id"] == "wsteth":
-        amt = 10 ** 5
+    if network == "ethereum":
+        if pool_data["id"] in ["busd", "dusd"]:
+            amt = 10 ** 5
+        if pool_data["id"] in ["sbtc", "ren"]:
+            amt = 10 ** 2
+        if pool_data["id"] == "aeth":
+            amt = 10 ** 2
+    if network == "arbitrum":
+        if pool_data["id"] == "wsteth":
+            amt = 10 ** 5
+    if network == "optimism":
+        if pool_data["id"] == "wsteth":
+            amt = 10 ** 4
+
     return [amt * 10 ** d for d in wrapped_decimals]
 
 

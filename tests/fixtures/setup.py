@@ -12,11 +12,11 @@ def _approve(owner, spender, *coins):
 # pool setup fixtures
 
 @pytest.fixture(scope="module")
-def mint_margo(margo, underlying_coins, wrapped_coins, wrapped_amounts_to_mint, underlying_amounts_to_mint, is_meta, weth, networks):
+def mint_margo(margo, underlying_coins, wrapped_coins, wrapped_amounts_to_mint, underlying_amounts_to_mint, is_meta, weth, network):
     for coin, amount in zip(wrapped_coins, wrapped_amounts_to_mint):
         if coin == ETH_ADDRESS:
             # in fork mode, we steal ETH from the wETH contract
-            weth = accounts.at(weth[networks[chain.id]], True)
+            weth = accounts.at(weth[network], True)
             weth.transfer(margo, amount)
             continue
         if coin.address == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb":
@@ -28,7 +28,7 @@ def mint_margo(margo, underlying_coins, wrapped_coins, wrapped_amounts_to_mint, 
         if coin in wrapped_coins:
             continue
         if coin == ETH_ADDRESS:
-            weth = accounts.at(weth[networks[chain.id]], True)
+            weth = accounts.at(weth[network], True)
             weth.transfer(margo, amount)
             continue
         if coin.address == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb":

@@ -122,8 +122,8 @@ def base_pool_data(pool_data):
 
 
 @pytest.fixture(scope="module")
-def networks():
-    return _NETWORKS
+def network():
+    return _NETWORKS[chain.id]
 
 
 @pytest.fixture(scope="module")

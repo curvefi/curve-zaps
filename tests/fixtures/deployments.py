@@ -90,11 +90,11 @@ INIT_DATA = {
 
 
 @pytest.fixture(scope="module")
-def zap(CalcTokenAmountZap, alice, networks):
-    use_int128 = INIT_DATA[networks[brownie.chain.id]]["use_int128"]
-    pool_type_addresses = INIT_DATA[networks[brownie.chain.id]]["pool_type_addresses"]
-    pool_types = INIT_DATA[networks[brownie.chain.id]]["pool_types"]
-    use_rate = INIT_DATA[networks[brownie.chain.id]]["use_rate"]
+def zap(CalcTokenAmountZap, alice, network):
+    use_int128 = INIT_DATA[network]["use_int128"]
+    pool_type_addresses = INIT_DATA[network]["pool_type_addresses"]
+    pool_types = INIT_DATA[network]["pool_types"]
+    use_rate = INIT_DATA[network]["use_rate"]
 
     use_int128 += [brownie.ZERO_ADDRESS] * (20 - len(use_int128))
     pool_type_addresses += [brownie.ZERO_ADDRESS] * (20 - len(pool_type_addresses))
