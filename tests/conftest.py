@@ -22,35 +22,38 @@ pytest_plugins = [
 
 _NETWORKS = {
     1: "ethereum",
+    10: "optimism",
     42161: "arbitrum",
 }
 
 _POOLDATA = {
     "ethereum": {},
+    "optimism": {},
     "arbitrum": {},
 }
 
 _POOLS = {
     "ethereum": POOLS + LENDING_POOLS + META_POOLS + FACTORY_POOOLS,
-    "arbitrum": ["wsteth"],
+    "optimism": ["3pool", "wsteth"],
+    "arbitrum": ["2pool", "wsteth"],
 }
 
 _WETH = {
     "ethereum": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "optimism": "0x4200000000000000000000000000000000000006",
     "arbitrum": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
 }
 
 
 def pytest_addoption(parser):
     parser.addoption("--pools", help="comma-separated list of pools to target")
-    parser.addoption("--chain_id", help="chain id")
 
 
 def pytest_sessionstart():
     # load `pooldata.json` for each pool
     project = get_loaded_projects()[0]
 
-    for network in ["ethereum", "arbitrum"]:
+    for network in _POOLDATA.keys():
         for path in [i for i in project._path.glob(f"contracts/{network}/*") if i.is_dir()]:
             with path.joinpath("pooldata.json").open() as fp:
                 _POOLDATA[network][path.name] = json.load(fp)
@@ -62,10 +65,17 @@ def pytest_sessionstart():
 
 
 def pytest_generate_tests(metafunc):
+    network = metafunc.config.getoption("network")[0].split("-")[0]
+    if network == "mainnet":
+        network = "ethereum"
     try:
         params = metafunc.config.getoption("pools").split(",")
     except Exception:
-        raise ValueError(f"No --pool key")
+        params = _POOLS[network]
+
+    for pool in params:
+        if pool not in _POOLS[network]:
+            raise ValueError(f"Invalid pool name: {pool}")
 
     metafunc.parametrize("pool_data", params, indirect=True, scope="session")
 

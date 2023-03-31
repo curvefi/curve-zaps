@@ -62,6 +62,18 @@ INIT_DATA = {
             [False, True, False, False],   # rETH
         ],
     },
+    "optimism": {
+        "use_int128": [],
+        "pool_type_addresses": [
+            "0xB90B9B1F91a01Ea22A182CD84C1E22222e39B415",  # wstETH
+        ],
+        "pool_types": [
+            7,  # wstETH
+        ],
+        "use_rate": [
+            [False, True, False, False],   # wstETH
+        ],
+    },
     "arbitrum": {
         "use_int128": [],
         "pool_type_addresses": [

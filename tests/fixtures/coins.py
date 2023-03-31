@@ -64,10 +64,10 @@ class _MintableTestTokenArbitrum(Contract):
     def _mint_for_testing(self, target, amount, kwargs=None):
         if self.address == self.wrapped:  # WETH
             self.transfer(target, amount, {"from": "0x0c1cf6883efa1b496b01f654e247b9b419873054"})
-        elif hasattr(self, "gatewayAddress"):  # ArbitrumUSDC
-            self.bridgeMint(target, amount, {"from": self.gatewayAddress()})
         elif hasattr(self, "l2Gateway"):  # ArbitrumERC20
             self.bridgeMint(target, amount, {"from": self.l2Gateway()})
+        elif hasattr(self, "gatewayAddress"):  # ArbitrumUSDC
+            self.bridgeMint(target, amount, {"from": self.gatewayAddress()})
         elif hasattr(self, "bridge"):  # OptimismBridgeToken2
             self.bridgeMint(target, amount, {"from": self.bridge()})
         elif hasattr(self, "POOL"):  # AToken
@@ -83,10 +83,34 @@ class _MintableTestTokenArbitrum(Contract):
             raise ValueError("Unsupported Token")
 
 
+class _MintableTestTokenOptimism(Contract):
+    def __init__(self, address, interface_name):
+        abi = getattr(interface, interface_name).abi
+        self.from_abi(interface_name, address, abi)
+
+        super().__init__(address)
+
+    def _mint_for_testing(self, target, amount, kwargs=None):
+        if self.address.lower() == "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1".lower():  # DAI
+            self.transfer(target, amount, {"from": "0xd08cd45925132537ea241179b19ab3a33ad97f3d"})
+        elif hasattr(self, "l2Bridge"):  # OptimismBridgeToken
+            self.mint(target, amount, {"from": self.l2Bridge()})
+        elif hasattr(self, "bridge"):  # OptimismBridgeToken2
+            self.bridgeMint(target, amount, {"from": self.bridge()})
+        elif hasattr(self, "mint") and hasattr(self, "owner"):  # renERC20
+            self.mint(target, amount, {"from": self.owner()})
+        elif hasattr(self, "mint") and hasattr(self, "minter"):  # CurveLpTokenV5
+            self.mint(target, amount, {"from": self.minter()})
+        else:
+            raise ValueError("Unsupported Token")
+
+
 def _get_coin_object(coin_address, coin_interface, pool_data):
-    if chain.id == 1:
+    if chain.id == 1:  # ethereum
         return _MintableTestTokenEthereum(coin_address, pool_data)
-    elif chain.id == 42161:
+    elif chain.id == 10:  # optimism
+        return _MintableTestTokenOptimism(coin_address, coin_interface)
+    elif chain.id == 42161:  # arbitrum
         return _MintableTestTokenArbitrum(coin_address, coin_interface)
 
 
