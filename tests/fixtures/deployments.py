@@ -74,6 +74,18 @@ INIT_DATA = {
             [False, True, False, False],   # wstETH
         ],
     },
+    "polygon": {
+        "use_int128": [],
+        "pool_type_addresses": [
+            "0x445FE580eF8d70FF569aB36e80c647af338db351",  # aave
+        ],
+        "pool_types": [
+            2,  # aave
+        ],
+        "use_rate": [
+            [False, False, False, False],   # aave
+        ],
+    },
     "arbitrum": {
         "use_int128": [],
         "pool_type_addresses": [

@@ -23,17 +23,20 @@ pytest_plugins = [
 _NETWORKS = {
     1: "ethereum",
     10: "optimism",
+    137: "polygon",
     42161: "arbitrum",
 }
 
 _POOLDATA = {
     "ethereum": {},
     "optimism": {},
+    "polygon": {},
     "arbitrum": {},
 }
 
 _POOLS = {
     "ethereum": POOLS + LENDING_POOLS + META_POOLS + FACTORY_POOOLS,
+    "polygon": ["aave"],
     "optimism": ["3pool", "wsteth"],
     "arbitrum": ["2pool", "wsteth"],
 }
@@ -41,6 +44,7 @@ _POOLS = {
 _WETH = {
     "ethereum": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "optimism": "0x4200000000000000000000000000000000000006",
+    "polygon": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
     "arbitrum": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
 }
 
