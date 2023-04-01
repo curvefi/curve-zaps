@@ -1,0 +1,40 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "pool_types": ["arate"],
+    "wrapped_contract": "ATokenMock",
+    "swap_address": "0x7f90122BF0700F9E7e1F688fe926940E8839F353",
+    "lp_token_address": "0x1337BedC9D22ecbe766dF105c9623922A27963EC",
+    "gauge_addresses": ["0x4620D46b4db7fB04a01A75fFed228Bc027C9A899"],
+    "coins": [
+        {
+            "name": "avDAI",
+            "underlying_name": "DAI",
+            "decimals": 18,
+            "wrapped_decimals": 18,
+            "underlying_address": "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+            "wrapped_address": "0x47AFa96Cdc9fAb46904A55a6ad4bf6660B53c38a",
+            "underlying_interface": "AvalancheERC20",
+            "wrapped_interface": "AToken"
+        },
+        {
+            "name": "avUSDC",
+            "underlying_name": "USDC",
+            "decimals": 6,
+            "wrapped_decimals": 6,
+            "underlying_address": "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+            "wrapped_address": "0x46A51127C3ce23fb7AB1DE06226147F446e4a857",
+            "underlying_interface": "AvalancheERC20",
+            "wrapped_interface": "AToken"
+        },
+        {
+            "name": "avUSDT",
+            "underlying_name": "USDT",
+            "decimals": 6,
+            "wrapped_decimals": 6,
+            "underlying_address": "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
+            "wrapped_address": "0x532E6537FEA298397212F09A61e03311686f548e",
+            "underlying_interface": "AvalancheERC20",
+            "wrapped_interface": "AToken"
+        }
+    ]
+}

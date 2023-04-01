@@ -1,5 +1,5 @@
 import pytest
-from brownie import Contract, ETH_ADDRESS, interface, chain
+from brownie import Contract, ETH_ADDRESS, interface, ZERO_ADDRESS
 from brownie.convert import to_bytes
 from brownie_tokens import MintableForkToken
 
@@ -20,8 +20,8 @@ WRAPPED_COIN_METHODS = {
 
 
 @pytest.fixture(scope="module")
-def wrapped_coins(pool_data, _underlying_coins):
-    return _wrapped(pool_data, _underlying_coins)
+def wrapped_coins(pool_data, _underlying_coins, network):
+    return _wrapped(pool_data, _underlying_coins, network)
 
 
 @pytest.fixture(scope="module")
@@ -153,18 +153,52 @@ class _MintableTestTokenArbitrum(Contract):
             raise ValueError("Unsupported Token")
 
 
-def _get_coin_object(coin_address, coin_interface, pool_data):
-    if chain.id == 1:  # ethereum
+class _MintableTestTokenAvalanche(Contract):
+    WAVAX = "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
+    USDCT = ["0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E".lower(), "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7".lower()]
+
+    def __init__(self, address, interface_name):
+        abi = getattr(interface, interface_name).abi
+        self.from_abi(interface_name, address, abi)
+
+        super().__init__(address)
+
+    def _mint_for_testing(self, target, amount, kwargs=None):
+        if self.address.lower() == self.WAVAX.lower():  # WAVAX
+            # Wrapped Avax, send from Iron Bank
+            self.transfer(target, amount, {"from": "0xb3c68d69e95b095ab4b33b4cb67dbc0fbf3edf56"})
+        elif self.address.lower() in self.USDCT:  # USDC, USDt
+            self.transfer(target, amount, {"from": "0x9f8c163cba728e99993abe7495f06c0a3c8ac8b9"})  # Binance: C-Chain Hot Wallet
+        elif hasattr(self, "POOL"):  # AToken
+            token = _MintableTestTokenAvalanche(self.UNDERLYING_ASSET_ADDRESS(), "AvalancheERC20")
+            lending_pool = interface.AaveLendingPool(self.POOL())
+            token._mint_for_testing(target, amount)
+            token.approve(lending_pool, amount, {"from": target})
+            lending_pool.deposit(token, amount, target, 0, {"from": target})
+        elif hasattr(self, "mint") and hasattr(self, "owner"):  # renERC20
+            self.mint(target, amount, {"from": self.owner()})
+        elif hasattr(self, "mint") and hasattr(self, "minter"):  # Curve LP Token
+            self.mint(target, amount, {"from": self.minter()})
+        elif hasattr(self, "mint"):  # AvalancheERC20 (bridge token)
+            self.mint(target, amount, ZERO_ADDRESS, 0, 0x0, {"from": "0xEb1bB70123B2f43419d070d7fDE5618971cc2F8f"})
+        else:
+            raise ValueError("Unsupported Token")
+
+
+def _get_coin_object(coin_address, coin_interface, pool_data, network):
+    if network == "ethereum":
         return _MintableTestTokenEthereum(coin_address, pool_data)
-    elif chain.id == 10:  # optimism
+    elif network == "optimism":
         return _MintableTestTokenOptimism(coin_address, coin_interface)
-    elif chain.id == 137:  # polygon
+    elif network == "polygon":
         return _MintableTestTokenPolygon(coin_address, coin_interface)
-    elif chain.id == 42161:  # arbitrum
+    elif network == "arbitrum":
         return _MintableTestTokenArbitrum(coin_address, coin_interface)
+    elif network == "avalanche":
+        return _MintableTestTokenAvalanche(coin_address, coin_interface)
 
 
-def _wrapped(pool_data, underlying_coins):
+def _wrapped(pool_data, underlying_coins, network):
     coins = []
 
     if not pool_data.get("wrapped_contract"):
@@ -174,11 +208,11 @@ def _wrapped(pool_data, underlying_coins):
         if not coin_data.get("wrapped_address"):
             coins.append(underlying_coins[i])
         else:
-            coins.append(_get_coin_object(coin_data.get("wrapped_address"), coin_data.get("wrapped_interface"), pool_data))
+            coins.append(_get_coin_object(coin_data.get("wrapped_address"), coin_data.get("wrapped_interface"), pool_data, network))
     return coins
 
 
-def _underlying(pool_data):
+def _underlying(pool_data, network):
     coins = []
 
     for coin_data in pool_data["coins"]:
@@ -189,7 +223,8 @@ def _underlying(pool_data):
                 _get_coin_object(
                     coin_data.get("underlying_address", coin_data.get("wrapped_address")),
                     coin_data.get("underlying_interface", coin_data.get("wrapped_interface")),
-                    pool_data
+                    pool_data,
+                    network,
                 )
             )
 
@@ -200,12 +235,12 @@ def _underlying(pool_data):
 
 
 @pytest.fixture(scope="module")
-def _underlying_coins(pool_data):
-    return _underlying(pool_data)
+def _underlying_coins(pool_data, network):
+    return _underlying(pool_data, network)
 
 
 @pytest.fixture(scope="module")
-def _base_coins(base_pool_data):
+def _base_coins(base_pool_data, network):
     if base_pool_data is None:
         return []
-    return _underlying(base_pool_data)
+    return _underlying(base_pool_data, network)

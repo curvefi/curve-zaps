@@ -97,7 +97,22 @@ INIT_DATA = {
         "use_rate": [
             [False, True, False, False],   # wstETH
         ],
-    }
+    },
+    "avalanche": {
+        "use_int128": [],
+        "pool_type_addresses": [
+            "0x7f90122BF0700F9E7e1F688fe926940E8839F353",  # aave
+            "0xD2AcAe14ae2ee0f6557aC6C6D0e407a92C36214b",  # aaveV3
+        ],
+        "pool_types": [
+            2,  # aave
+            2,  # aaveV3
+        ],
+        "use_rate": [
+            [False, False, False, False],   # aave
+            [False, False, False, False],   # aaveV3
+        ],
+    },
 }
 
 

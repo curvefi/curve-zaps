@@ -44,6 +44,9 @@ def wrapped_amounts_to_mint(pool_data, wrapped_decimals, network):
     if network == "optimism":
         if pool_data["id"] == "wsteth":
             amt = 10 ** 4
+    if network == "avalanche":
+        if pool_data["id"] == "aaveV3":  # Just because it's a very small pool
+            amt = 100
 
     return [amt * 10 ** d for d in wrapped_decimals]
 

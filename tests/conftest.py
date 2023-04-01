@@ -25,20 +25,17 @@ _NETWORKS = {
     10: "optimism",
     137: "polygon",
     42161: "arbitrum",
+    43114: "avalanche",
 }
 
-_POOLDATA = {
-    "ethereum": {},
-    "optimism": {},
-    "polygon": {},
-    "arbitrum": {},
-}
+_POOLDATA = {}
 
 _POOLS = {
     "ethereum": POOLS + LENDING_POOLS + META_POOLS + FACTORY_POOOLS,
     "polygon": ["aave"],
     "optimism": ["3pool", "wsteth"],
     "arbitrum": ["2pool", "wsteth"],
+    "avalanche": ["aave", "aaveV3"],
 }
 
 _WETH = {
@@ -46,6 +43,7 @@ _WETH = {
     "optimism": "0x4200000000000000000000000000000000000006",
     "polygon": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
     "arbitrum": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+    "avalanche": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
 }
 
 
@@ -57,7 +55,8 @@ def pytest_sessionstart():
     # load `pooldata.json` for each pool
     project = get_loaded_projects()[0]
 
-    for network in _POOLDATA.keys():
+    for network in _POOLS.keys():
+        _POOLDATA[network] = {}
         for path in [i for i in project._path.glob(f"contracts/{network}/*") if i.is_dir()]:
             with path.joinpath("pooldata.json").open() as fp:
                 _POOLDATA[network][path.name] = json.load(fp)
