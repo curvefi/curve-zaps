@@ -14,7 +14,7 @@ interface Pool:
     def A() -> uint256: view
     def get_virtual_price() -> uint256: view
 
-interface LemdingPool:
+interface Int128Pool:
     def balances(i: int128) -> uint256: view
     def coins(i: int128) -> address: view
 
@@ -294,8 +294,8 @@ def _calc_token_amount(
         if i >= n_coins:
             break
         if self.USE_INT128[pool]:
-            coins[i] = LemdingPool(pool).coins(convert(i, int128))
-            old_balances[i] = LemdingPool(pool).balances(convert(i, int128))
+            coins[i] = Int128Pool(pool).coins(convert(i, int128))
+            old_balances[i] = Int128Pool(pool).balances(convert(i, int128))
         else:
             coins[i] = Pool(pool).coins(i)
             old_balances[i] = Pool(pool).balances(i)
