@@ -1,0 +1,22 @@
+{
+    "lp_contract": "CurveTokenV2",
+    "swap_address": "0x27e611fd27b276acbd5ffd632e5eaebec9761e40",
+    "lp_token_address": "0x27e611fd27b276acbd5ffd632e5eaebec9761e40",
+    "gauge_addresses": ["0x15bB164F9827De760174d3d3dAD6816eF50dE13c"],
+    "coins": [
+        {
+            "name": "DAI",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+            "underlying_interface": "AnyswapERC20"
+        },
+        {
+            "name": "USDC",
+            "decimals": 6,
+            "tethered": false,
+            "underlying_address": "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
+            "underlying_interface": "AnyswapERC20"
+        }
+    ]
+}

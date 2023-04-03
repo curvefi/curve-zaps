@@ -1,0 +1,40 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "pool_types": ["arate"],
+    "wrapped_contract": "ATokenMock",
+    "swap_address": "0x0fa949783947Bf6c1b171DB13AEACBB488845B3f",
+    "lp_token_address": "0xD02a30d33153877BC20e5721ee53DeDEE0422B2F",
+    "gauge_addresses": ["0xF7b9c402c4D6c2eDbA04a7a515b53D11B1E9b2cc"],
+    "coins": [
+        {
+            "name": "gDAI",
+            "underlying_name": "DAI",
+            "decimals": 18,
+            "wrapped_decimals": 18,
+            "underlying_address": "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+            "wrapped_address": "0x07e6332dd090d287d3489245038daf987955dcfb",
+            "underlying_interface": "AnyswapERC20",
+            "wrapped_interface": "AToken"
+        },
+        {
+            "name": "gUSDC",
+            "underlying_name": "USDC",
+            "decimals": 6,
+            "wrapped_decimals": 6,
+            "underlying_address": "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
+            "wrapped_address": "0xe578c856933d8e1082740bf7661e379aa2a30b26",
+            "underlying_interface": "AnyswapERC20",
+            "wrapped_interface": "AToken"
+        },
+        {
+            "name": "gfUSDT",
+            "underlying_name": "fUSDT",
+            "decimals": 6,
+            "wrapped_decimals": 6,
+            "underlying_address": "0x049d68029688eabf473097a2fc38ef61633a3c7a",
+            "wrapped_address": "0x940f41f0ec9ba1a34cf001cc03347ac092f5f6b5",
+            "underlying_interface": "AnyswapERC20",
+            "wrapped_interface": "AToken"
+        }
+    ]
+}

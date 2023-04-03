@@ -1,0 +1,25 @@
+{
+    "base_pool": "2pool",
+    "pool_types": ["meta"],
+    "lp_contract": "CurveTokenV2",
+    "swap_address": "0x92d5ebf3593a92888c25c0abef126583d4b5312e",
+    "lp_token_address": "0x92d5ebf3593a92888c25c0abef126583d4b5312e",
+    "zap_address": "0xa42bd395f183726d1a8774cfa795771f8acfd777",
+    "gauge_addresses": ["0x06e3C4da96fd076b97b7ca3Ae23527314b6140dF"],
+    "coins": [
+        {
+            "name": "fUSDT",
+            "decimals": 6,
+            "tethered": false,
+            "underlying_address": "0x049d68029688eabf473097a2fc38ef61633a3c7a",
+            "underlying_interface": "AnyswapERC20"
+        },
+        {
+            "name": "DAI+USDC",
+            "decimals": 18,
+            "base_pool_token": true,
+            "wrapped_address": "0x27e611fd27b276acbd5ffd632e5eaebec9761e40",
+            "wrapped_interface": "CurveLpTokenV5"
+        }
+    ]
+}

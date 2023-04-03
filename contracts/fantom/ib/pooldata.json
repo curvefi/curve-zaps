@@ -1,0 +1,40 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "pool_types": ["crate"],
+    "wrapped_contract": "cERC20",
+    "swap_address": "0x4FC8D635c3cB1d0aa123859e2B2587d0FF2707b1",
+    "lp_token_address": "0xDf38ec60c0eC001142a33eAa039e49E9b84E64ED",
+    "gauge_addresses": ["0xDee85272EAe1aB4afBc6433F4d819BaBC9c7045A"],
+    "coins": [
+        {
+            "name": "iDAI",
+            "underlying_name": "DAI",
+            "decimals": 18,
+            "wrapped_decimals": 8,
+            "underlying_address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",
+            "wrapped_address": "0x04c762a5dF2Fa02FE868F25359E0C259fB811CfE",
+            "underlying_interface": "AnyswapERC20",
+            "wrapped_interface": "cERC20"
+        },
+        {
+            "name": "iUSDC",
+            "underlying_name": "USDC",
+            "decimals": 6,
+            "wrapped_decimals": 8,
+            "underlying_address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
+            "wrapped_address": "0x328A7b4d538A2b3942653a9983fdA3C12c571141",
+            "underlying_interface": "AnyswapERC20",
+            "wrapped_interface": "cERC20"
+        },
+        {
+            "name": "iUSDT",
+            "underlying_name": "fUSDT",
+            "decimals": 6,
+            "wrapped_decimals": 8,
+            "underlying_address": "0x049d68029688eAbF473097a2fC38ef61633A3C7A",
+            "wrapped_address": "0x70faC71debfD67394D1278D98A29dea79DC6E57A",
+            "underlying_interface": "AnyswapERC20",
+            "wrapped_interface": "cERC20"
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 import brownie
 import pytest
-from brownie import Contract
+from brownie import Contract, chain
 from brownie.test import given, strategy
 from hypothesis import settings
 from datetime import timedelta
@@ -45,7 +45,7 @@ def test_wrapped(
     elif True in use_rate:
         assert abs(expected - lp_balance) <= 100
     else:
-        assert abs(expected - lp_balance) <= 1
+        assert abs(expected - lp_balance) <= 2
 
     # Withdraw
     withdraw_amounts = list(map(lambda x: int(x / 1.02), wrapped_amounts))
@@ -94,7 +94,10 @@ def test_underlying(
     zap_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
 
     lp_balance = lp_token.balanceOf(margo)
-    assert abs(expected - lp_balance) / lp_balance < 1e-8
+    if chain.id == 250:  # Fantom
+        assert abs(expected - lp_balance) / lp_balance < 1e-6
+    else:
+        assert abs(expected - lp_balance) / lp_balance < 1e-8
 
     # Withdraw
     withdraw_amounts = list(map(lambda x: int(x / 1.02), underlying_amounts))

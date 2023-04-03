@@ -1,7 +1,5 @@
 import pytest
 import brownie
-
-
 INIT_DATA = {
     "ethereum": {
         "use_int128": [
@@ -37,13 +35,13 @@ INIT_DATA = {
             3,  # usdt
             3,  # compound
 
-            4,  # y
-            4,  # busd
-            4,  # pax
+            5,  # y
+            5,  # busd
+            5,  # pax
 
-            5,  # ankrETH
+            6,  # ankrETH
 
-            6,  # rETH
+            7,  # rETH
         ],
         "use_rate": [
             [False, False, False, False],  # saave
@@ -68,7 +66,7 @@ INIT_DATA = {
             "0xB90B9B1F91a01Ea22A182CD84C1E22222e39B415",  # wstETH
         ],
         "pool_types": [
-            7,  # wstETH
+            8,  # wstETH
         ],
         "use_rate": [
             [False, True, False, False],   # wstETH
@@ -86,13 +84,31 @@ INIT_DATA = {
             [False, False, False, False],   # aave
         ],
     },
+    "fantom": {
+        "use_int128": [],
+        "pool_type_addresses": [
+            "0x0fa949783947Bf6c1b171DB13AEACBB488845B3f",  # geist
+
+            "0x4FC8D635c3cB1d0aa123859e2B2587d0FF2707b1",  # ib
+        ],
+        "pool_types": [
+            2,  # geist
+
+            4,  # ib
+        ],
+        "use_rate": [
+            [False, False, False, False],  # geist
+
+            [True, True, True, False],     # ib
+        ],
+    },
     "arbitrum": {
         "use_int128": [],
         "pool_type_addresses": [
             "0x6eB2dc694eB516B16Dc9FBc678C60052BbdD7d80",  # wstETH
         ],
         "pool_types": [
-            7,  # wstETH
+            8,  # wstETH
         ],
         "use_rate": [
             [False, True, False, False],   # wstETH
@@ -114,6 +130,8 @@ INIT_DATA = {
         ],
     },
 }
+
+
 
 
 @pytest.fixture(scope="module")

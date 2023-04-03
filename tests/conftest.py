@@ -24,6 +24,7 @@ _NETWORKS = {
     1: "ethereum",
     10: "optimism",
     137: "polygon",
+    250: "fantom",
     42161: "arbitrum",
     43114: "avalanche",
 }
@@ -32,8 +33,9 @@ _POOLDATA = {}
 
 _POOLS = {
     "ethereum": POOLS + LENDING_POOLS + META_POOLS + FACTORY_POOOLS,
-    "polygon": ["aave"],
     "optimism": ["3pool", "wsteth"],
+    "polygon": ["aave"],
+    "fantom": ["2pool", "fusdt", "ib", "geist"],
     "arbitrum": ["2pool", "wsteth"],
     "avalanche": ["aave", "aaveV3"],
 }
@@ -42,6 +44,7 @@ _WETH = {
     "ethereum": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
     "optimism": "0x4200000000000000000000000000000000000006",
     "polygon": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+    "fantom": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
     "arbitrum": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
     "avalanche": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
 }

@@ -34,7 +34,7 @@ def underlying_coins(_underlying_coins, _base_coins):
 
 @pytest.fixture(scope="module")
 def lp_token(pool_data):
-    return Contract(pool_data['lp_token_address'])
+    return Contract.from_explorer(pool_data['lp_token_address'])
 
 
 # private API below
@@ -121,6 +121,66 @@ class _MintableTestTokenPolygon(Contract):
             raise ValueError("Unsupported Token")
 
 
+class _MintableTestTokenFantom(Contract):
+    wrapped = "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83"
+    underlyingTokens =[
+        '0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E'.lower(),
+        '0x04068DA6C83AFCFA0e13ba15A6696662335D5B75'.lower(),
+        '0x049d68029688eAbF473097a2fC38ef61633A3C7A'.lower(),
+    ]
+    iTokens = [
+        '0x04c762a5dF2Fa02FE868F25359E0C259fB811CfE'.lower(),
+        '0x328A7b4d538A2b3942653a9983fdA3C12c571141'.lower(),
+        '0x70faC71debfD67394D1278D98A29dea79DC6E57A'.lower(),
+    ]
+
+    def __init__(self, address, interface_name):
+        abi = getattr(interface, interface_name).abi
+        self.from_abi(interface_name, address, abi)
+
+        super().__init__(address)
+
+    def _mint_for_testing(self, target, amount, kwargs=None):
+        if self.address == self.wrapped:
+            # Wrapped Fantom, send from SpookySwap
+            self.transfer(target, amount, {"from": "0x2a651563c9d3af67ae0388a5c8f89b867038089e"})
+        elif self.address.lower() in self.iTokens:
+            idx = self.iTokens.index(self.address.lower())
+            underlying_token = _MintableTestTokenFantom(self.underlyingTokens[idx], "AnyswapERC20")
+            underlying_amount = int(amount * 10**(underlying_token.decimals() - 8))
+            underlying_token._mint_for_testing(target, underlying_amount)
+            underlying_token.approve(self.address, underlying_amount, {'from': target})
+            self.mint(underlying_amount, {'from': target})
+        elif self.address.lower() == "0x27e611fd27b276acbd5ffd632e5eaebec9761e40".lower():  # 2pool LP
+            amount = amount // 10**18
+            DAI = _MintableTestTokenFantom("0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e", "AnyswapERC20")
+            USDC = _MintableTestTokenFantom("0x04068da6c83afcfa0e13ba15a6696662335d5b75", "AnyswapERC20")
+            DAI._mint_for_testing(target, (amount // 2) * 10 ** 18)
+            USDC._mint_for_testing(target, (amount // 2) * 10 ** 6)
+
+            pool_address = "0x27e611fd27b276acbd5ffd632e5eaebec9761e40"
+            DAI.approve(pool_address, 2 ** 256 - 1, {'from': target})
+            USDC.approve(pool_address, 2 ** 256 - 1, {'from': target})
+
+            pool = Contract.from_explorer(pool_address)
+            pool.add_liquidity([(amount // 2) * 10 ** 18, (amount // 2) * 10 ** 6], 0, {'from': target})
+        elif hasattr(self, "Swapin"):  # AnyswapERC20
+            tx_hash = to_bytes("0x4475636b204475636b20476f6f7365")
+            self.Swapin(tx_hash, target, amount, {"from": self.owner()})
+        elif hasattr(self, "POOL"):  # AToken (gToken)
+            token = _MintableTestTokenFantom(self.UNDERLYING_ASSET_ADDRESS(), "AnyswapERC20")
+            lending_pool = interface.AaveLendingPool(self.POOL())
+            token._mint_for_testing(target, amount)
+            token.approve(lending_pool, amount, {"from": target})
+            lending_pool.deposit(token, amount, target, 0, {"from": target})
+        elif hasattr(self, "mint") and hasattr(self, "owner"):  # renERC20
+            self.mint(target, amount, {"from": self.owner()})
+        elif hasattr(self, "mint") and hasattr(self, "minter"):  # CurveLpTokenV5
+            self.mint(target, amount, {"from": self.minter()})
+        else:
+            raise ValueError("Unsupported Token")
+
+
 class _MintableTestTokenArbitrum(Contract):
     wrapped = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
 
@@ -143,6 +203,7 @@ class _MintableTestTokenArbitrum(Contract):
         elif hasattr(self, "POOL"):  # AToken
             token = _MintableTestTokenArbitrum(self.UNDERLYING_ASSET_ADDRESS(), "ArbitrumERC20")
             lending_pool = interface.AaveLendingPool(self.POOL())
+            token._mint_for_testing(target, amount)
             token.approve(lending_pool, amount, {"from": target})
             lending_pool.deposit(token, amount, target, 0, {"from": target})
         elif hasattr(self, "mint") and hasattr(self, "owner"):  # renERC20
@@ -192,6 +253,8 @@ def _get_coin_object(coin_address, coin_interface, pool_data, network):
         return _MintableTestTokenOptimism(coin_address, coin_interface)
     elif network == "polygon":
         return _MintableTestTokenPolygon(coin_address, coin_interface)
+    elif network == "fantom":
+        return _MintableTestTokenFantom(coin_address, coin_interface)
     elif network == "arbitrum":
         return _MintableTestTokenArbitrum(coin_address, coin_interface)
     elif network == "avalanche":
