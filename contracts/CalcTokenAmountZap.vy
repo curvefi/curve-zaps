@@ -378,7 +378,7 @@ def calc_token_amount_meta(
     meta_amounts[0] = amounts[0]
     for i in range(MAX_COINS - 1):
         base_amounts[i] = amounts[i + 1]
-    _base_tokens: uint256 = self._calc_token_amount(base_pool, base_token, base_amounts, n_coins - 1, 0, [False, False, False, False], empty(address), deposit)
+    _base_tokens: uint256 = self._calc_token_amount(base_pool, base_token, base_amounts, n_coins - 1, self.POOL_TYPE[base_pool], [False, False, False, False], empty(address), deposit)
     meta_amounts[1] = _base_tokens
 
     return self._calc_token_amount(pool, token, meta_amounts, 2, 1, [False, False, False, False], base_pool, deposit)
