@@ -101,7 +101,7 @@ def _rates_meta(coin1: address, base_pool: address) -> uint256[MAX_COINS]:
 
 @internal
 @view
-def _rates_compound(coins: address[MAX_COINS], n_coins: uint256, use_rate: bool[MAX_COINS]) -> uint256[MAX_COINS]:
+def _rates_compound(coins: address[MAX_COINS], n_coins: uint256, use_rate: bool[MAX_COINS], use_block_number: bool) -> uint256[MAX_COINS]:
     # exchangeRateStored * (1 + supplyRatePerBlock * (getBlockNumber - accrualBlockNumber) / 1e18)
     result: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
     for i in range(MAX_COINS):
@@ -114,7 +114,10 @@ def _rates_compound(coins: address[MAX_COINS], n_coins: uint256, use_rate: bool[
             rate = cERC20(coins[i]).exchangeRateStored()
             supply_rate: uint256 = cERC20(coins[i]).supplyRatePerBlock()
             old_block: uint256 = cERC20(coins[i]).accrualBlockNumber()
-            rate += rate * supply_rate * (block.number - old_block) / PRECISION
+            if use_block_number:
+                rate += rate * supply_rate * (block.number - old_block) / PRECISION
+            else:
+                rate += rate * supply_rate * (block.timestamp - old_block) / PRECISION
         result[i] = rate * PRECISION / 10 ** self.get_decimals(underlying_coin)
     return result
 
@@ -190,14 +193,16 @@ def _rates(pool: address, pool_type: uint8, coins: address[MAX_COINS], n_coins: 
     elif pool_type == 2:
         return self._rates_plain(coins, n_coins) # aave
     elif pool_type == 3:
-        return self._rates_compound(coins, n_coins, use_rate)
+        return self._rates_compound(coins, n_coins, use_rate, True)
     elif pool_type == 4:
-        return self._rates_y(coins, n_coins, use_rate)
+        return self._rates_compound(coins, n_coins, use_rate, False)
     elif pool_type == 5:
-        return self._rates_ankr(coins, n_coins, use_rate)
+        return self._rates_y(coins, n_coins, use_rate)
     elif pool_type == 6:
-        return self._rates_reth(coins, n_coins, use_rate)
+        return self._rates_ankr(coins, n_coins, use_rate)
     elif pool_type == 7:
+        return self._rates_reth(coins, n_coins, use_rate)
+    elif pool_type == 8:
         return self._rates_wsteth(pool, coins, n_coins, use_rate)
     else:
         raise "Bad pool type"
