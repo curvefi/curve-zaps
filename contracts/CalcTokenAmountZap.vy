@@ -53,9 +53,11 @@ MAX_COINS: constant(uint256) = 4
 PRECISION: constant(uint256) = 10 ** 18  # The precision to convert to
 FEE_DENOMINATOR: constant(uint256) = 10 ** 10
 
-USE_INT128: public(HashMap[address, bool])
-POOL_TYPE: public(HashMap[address, uint8])
-USE_RATE: public(HashMap[address, bool[MAX_COINS]])
+USE_INT128: HashMap[address, bool]
+POOL_TYPE: HashMap[address, uint8]
+USE_RATE: HashMap[address, bool[MAX_COINS]]
+
+admin: public(address)
 
 @external
 def __init__(
@@ -68,6 +70,8 @@ def __init__(
     @notice CalcTokenAmountZap constructor
     @param _use_int128 Addresses of pools which take indexes as int128 in coins(i) and balances(i) methods
     """
+    self.admin = msg.sender
+
     for addr in _use_int128:
         if addr == empty(address):
             break
@@ -314,8 +318,17 @@ def _calc_token_amount(
         deposit: bool,
 ) -> uint256:
     """
-    Method to calculate addition or reduction in token supply at
-    deposit or withdrawal TAKING FEES INTO ACCOUNT.
+    @notice Method to calculate addition or reduction in token supply at
+            deposit or withdrawal TAKING FEES INTO ACCOUNT.
+    @param pool Pool address
+    @param token LP token address
+    @param amounts Coin amounts to add/remove
+    @param n_coins Number of coins in the pool
+    @param pool_type Type of the pool (0, 1, 2, ..., 9)
+    @param use_rate Use rate or not for each pool's coin
+    @param base_pool Base pool address (for meta)
+    @param deposit True - add_liquidity, False - remove_liquidity_imbalance
+    @return Expected LP token amount to mint/burn
     """
     coins: address[MAX_COINS] = empty(address[MAX_COINS])
     old_balances: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
@@ -384,6 +397,16 @@ def calc_token_amount(
         n_coins: uint256,
         deposit: bool,
 ) -> uint256:
+    """
+    @notice Method to calculate addition or reduction in token supply at
+            deposit or withdrawal TAKING FEES INTO ACCOUNT. For NON-META pools.
+    @param pool Pool address
+    @param token LP token address
+    @param amounts Coin amounts to add/remove
+    @param n_coins Number of coins in the pool
+    @param deposit True - add_liquidity, False - remove_liquidity_imbalance
+    @return Expected LP token amount to mint/burn
+    """
     return self._calc_token_amount(pool, token, amounts, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], empty(address), deposit)
 
 
@@ -399,6 +422,18 @@ def calc_token_amount_meta(
         deposit: bool,
         use_underlying: bool,
 ) -> uint256:
+    """
+    @notice Method to calculate addition or reduction in token supply at
+            deposit or withdrawal TAKING FEES INTO ACCOUNT. For META pools.
+    @param pool Pool address
+    @param token LP token address
+    @param amounts Coin amounts to add/remove
+    @param n_coins Number of coins in the pool
+    @param base_pool Base pool address
+    @param base_token Base pool's LP token address
+    @param deposit True - add_liquidity, False - remove_liquidity_imbalance
+    @return Expected LP token amount to mint/burn
+    """
     if not use_underlying:
         if self.POOL_TYPE[pool] == 0:
             return self._calc_token_amount(pool, token, amounts, n_coins, 1, [False, False, False, False], base_pool, deposit)
@@ -417,3 +452,32 @@ def calc_token_amount_meta(
         return self._calc_token_amount(pool, token, meta_amounts, 2, 1, [False, False, False, False], base_pool, deposit)
     else:
         return self._calc_token_amount(pool, token, meta_amounts, 2, self.POOL_TYPE[pool], self.USE_RATE[pool], base_pool, deposit)
+
+
+@external
+def set_int128(_use_int128: address[20]):
+    """
+    @notice Set pools which use int128 for arg in coins and balances methods (admin only)
+    @param _use_int128 Addresses of pools
+    """
+    assert msg.sender == self.admin, "admin only"
+    for addr in _use_int128:
+        if addr == empty(address):
+            break
+        self.USE_INT128[addr] = True
+
+
+@external
+def set_pool_type(_pool_type_addresses: address[20], _pool_types: uint8[20], _use_rate: bool[MAX_COINS][20]):
+    """
+    @notice Set pools that use rates or dynamic fee (admin only)
+    @param _pool_type_addresses Addresses of pools
+    @param _pool_types Types of pools
+    @param _use_rate Use rate or not for each pool's coin
+    """
+    assert msg.sender == self.admin, "admin only"
+    for i in range(20):
+        if _pool_type_addresses[i] == empty(address):
+            break
+        self.POOL_TYPE[_pool_type_addresses[i]] = _pool_types[i]
+        self.USE_RATE[_pool_type_addresses[i]] = _use_rate[i]
