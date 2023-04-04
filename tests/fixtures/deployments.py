@@ -12,6 +12,8 @@ INIT_DATA = {
             "0x93054188d876f558f4a66B2EF1d97d16eDf0895B",  # ren
         ],
         "pool_type_addresses": [
+            "0x618788357D0EBd8A37e763ADab3bc575D54c2C7d",  # rai
+
             "0xeb16ae0052ed37f479f7fe63849198df1765a733",  # saave
             "0xDeBF20617708857ebe4F679508E7b7863a8A8EeE",  # aave
 
@@ -28,22 +30,26 @@ INIT_DATA = {
             "0xF9440930043eb3997fc70e1339dBb11F341de7A8",  # rETH
         ],
         "pool_types": [
-            2,  # saave
-            2,  # aave
+            2,  # rai
 
-            3,  # ib
-            3,  # usdt
-            3,  # compound
+            3,  # saave
+            3,  # aave
 
-            5,  # y
-            5,  # busd
-            5,  # pax
+            4,  # ib
+            4,  # usdt
+            4,  # compound
 
-            6,  # ankrETH
+            6,  # y
+            6,  # busd
+            6,  # pax
 
-            7,  # rETH
+            7,  # ankrETH
+
+            8,  # rETH
         ],
         "use_rate": [
+            [True, False, False, False],  # rai
+
             [False, False, False, False],  # saave
             [False, False, False, False],  # aave
 
@@ -66,7 +72,7 @@ INIT_DATA = {
             "0xB90B9B1F91a01Ea22A182CD84C1E22222e39B415",  # wstETH
         ],
         "pool_types": [
-            8,  # wstETH
+            9,  # wstETH
         ],
         "use_rate": [
             [False, True, False, False],   # wstETH
@@ -78,7 +84,7 @@ INIT_DATA = {
             "0x445FE580eF8d70FF569aB36e80c647af338db351",  # aave
         ],
         "pool_types": [
-            2,  # aave
+            3,  # aave
         ],
         "use_rate": [
             [False, False, False, False],   # aave
@@ -92,9 +98,9 @@ INIT_DATA = {
             "0x4FC8D635c3cB1d0aa123859e2B2587d0FF2707b1",  # ib
         ],
         "pool_types": [
-            2,  # geist
+            3,  # geist
 
-            4,  # ib
+            5,  # ib
         ],
         "use_rate": [
             [False, False, False, False],  # geist
@@ -108,7 +114,7 @@ INIT_DATA = {
             "0x6eB2dc694eB516B16Dc9FBc678C60052BbdD7d80",  # wstETH
         ],
         "pool_types": [
-            8,  # wstETH
+            9,  # wstETH
         ],
         "use_rate": [
             [False, True, False, False],   # wstETH
@@ -121,8 +127,8 @@ INIT_DATA = {
             "0xD2AcAe14ae2ee0f6557aC6C6D0e407a92C36214b",  # aaveV3
         ],
         "pool_types": [
-            2,  # aave
-            2,  # aaveV3
+            3,  # aave
+            3,  # aaveV3
         ],
         "use_rate": [
             [False, False, False, False],   # aave

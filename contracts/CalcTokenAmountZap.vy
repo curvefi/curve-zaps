@@ -21,6 +21,12 @@ interface Int128Pool:
 interface wstETHPool:
     def oracle() -> address: view
 
+interface RaiPool:
+    def redemption_price_snap() -> address: view
+
+interface RedemptionPriceSnap:
+    def snappedRedemptionPrice() -> uint256: view
+
 interface Oracle:
     def latestAnswer() -> int256: view
 
@@ -97,6 +103,22 @@ def _rates_plain(coins: address[MAX_COINS], n_coins: uint256) -> uint256[MAX_COI
 @view
 def _rates_meta(coin1: address, base_pool: address) -> uint256[MAX_COINS]:
     return [PRECISION * PRECISION / 10 ** self.get_decimals(coin1), Pool(base_pool).get_virtual_price(), 0, 0]
+
+
+@internal
+@view
+def _rates_rai(pool: address, base_pool: address, n_coins: uint256, use_rate: bool[MAX_COINS]) -> uint256[MAX_COINS]:
+    result: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
+    for i in range(MAX_COINS):
+        if i >= n_coins:
+            break
+        if use_rate[i]:
+            # REDMPTION_PRICE_SCALE: uint25) = 10 ** 9
+            result[i] = RedemptionPriceSnap(RaiPool(pool).redemption_price_snap()).snappedRedemptionPrice() / 10 ** 9  # RAI
+        else:
+            result[i] = Pool(base_pool).get_virtual_price()  # LP token
+
+    return result
 
 
 @internal
@@ -191,18 +213,20 @@ def _rates(pool: address, pool_type: uint8, coins: address[MAX_COINS], n_coins: 
     elif pool_type == 1:
         return self._rates_meta(coins[0], base_pool)
     elif pool_type == 2:
-        return self._rates_plain(coins, n_coins) # aave
+        return self._rates_rai(pool, base_pool, n_coins, use_rate)
     elif pool_type == 3:
-        return self._rates_compound(coins, n_coins, use_rate, True)
+        return self._rates_plain(coins, n_coins) # aave
     elif pool_type == 4:
-        return self._rates_compound(coins, n_coins, use_rate, False)
+        return self._rates_compound(coins, n_coins, use_rate, True)
     elif pool_type == 5:
-        return self._rates_y(coins, n_coins, use_rate)
+        return self._rates_compound(coins, n_coins, use_rate, False)
     elif pool_type == 6:
-        return self._rates_ankr(coins, n_coins, use_rate)
+        return self._rates_y(coins, n_coins, use_rate)
     elif pool_type == 7:
-        return self._rates_reth(coins, n_coins, use_rate)
+        return self._rates_ankr(coins, n_coins, use_rate)
     elif pool_type == 8:
+        return self._rates_reth(coins, n_coins, use_rate)
+    elif pool_type == 9:
         return self._rates_wsteth(pool, coins, n_coins, use_rate)
     else:
         raise "Bad pool type"
@@ -223,7 +247,7 @@ def _dynamic_fee(xpi: uint256, xpj: uint256, _fee: uint256, _feemul: uint256) ->
 @view
 def _fee(pool: address, pool_type: uint8, n_coins: uint256, xpi: uint256, xpj: uint256) -> uint256:
     _fee: uint256 = Pool(pool).fee() * n_coins / (4 * (n_coins - 1))
-    if pool_type == 2:  # aave
+    if pool_type == 3:  # aave
         _feemul: uint256 = Pool(pool).offpeg_fee_multiplier()
         return self._dynamic_fee(xpi, xpj, _fee, _feemul)
     else:
@@ -376,7 +400,10 @@ def calc_token_amount_meta(
         use_underlying: bool,
 ) -> uint256:
     if not use_underlying:
-        return self._calc_token_amount(pool, token, amounts, n_coins, 1, [False, False, False, False], base_pool, deposit)
+        if self.POOL_TYPE[pool] == 0:
+            return self._calc_token_amount(pool, token, amounts, n_coins, 1, [False, False, False, False], base_pool, deposit)
+        else:
+            return self._calc_token_amount(pool, token, amounts, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], base_pool, deposit)
 
     meta_amounts: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
     base_amounts: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
@@ -386,4 +413,7 @@ def calc_token_amount_meta(
     _base_tokens: uint256 = self._calc_token_amount(base_pool, base_token, base_amounts, n_coins - 1, self.POOL_TYPE[base_pool], [False, False, False, False], empty(address), deposit)
     meta_amounts[1] = _base_tokens
 
-    return self._calc_token_amount(pool, token, meta_amounts, 2, 1, [False, False, False, False], base_pool, deposit)
+    if self.POOL_TYPE[pool] == 0:
+        return self._calc_token_amount(pool, token, meta_amounts, 2, 1, [False, False, False, False], base_pool, deposit)
+    else:
+        return self._calc_token_amount(pool, token, meta_amounts, 2, self.POOL_TYPE[pool], self.USE_RATE[pool], base_pool, deposit)

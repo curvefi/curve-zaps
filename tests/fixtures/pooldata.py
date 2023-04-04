@@ -75,21 +75,6 @@ def is_meta(pool_data):
 
 
 @pytest.fixture(scope="module")
-def pool_type(pool_data, is_meta):
-    if is_meta:
-        return 1
-    wrapped_contract = pool_data.get("wrapped_contract", "Plain")
-    return {
-        "Plain": 0,
-        "ATokenMock": 2,
-        "cERC20": 3,
-        "yERC20": 4,
-        "aETH": 5,
-        "rETH": 6,
-    }.get(wrapped_contract, 0)
-
-
-@pytest.fixture(scope="module")
 def use_lending(n_coins_underlying, n_coins_wrapped, underlying_coins, wrapped_coins):
     use_lending = [False] * 4
     if n_coins_underlying == n_coins_wrapped:

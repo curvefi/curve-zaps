@@ -9,7 +9,7 @@ POOLS = ['3pool', 'aave', 'aeth', 'bbtc', 'busd', 'compound', 'dusd', 'gusd', 'h
          'pax', 'pbtc', 'ren', 'reth', 'rsv', 'saave', 'sbtc', 'seth', 'steth', 'susd', 'tbtc', 'usdk', 'usdn', 'usdp', 'usdt',
          'ust', 'y', 'eurt', 'tusd']
 LENDING_POOLS = ['compound', 'usdt', 'y', 'busd', 'pax', 'aave', 'saave', 'ib']
-META_POOLS = ['gusd', 'husd', 'usdk', 'usdn', 'musd', 'rsv', 'tbtc', 'dusd', 'pbtc', 'bbtc', 'obtc', 'ust', 'usdp']
+META_POOLS = ['gusd', 'husd', 'usdk', 'usdn', 'musd', 'rsv', 'tbtc', 'dusd', 'pbtc', 'bbtc', 'obtc', 'ust', 'usdp', 'rai']
 FACTORY_POOOLS = ['tusd']  # 'frax', 'lusd', 'busdv2', 'alusd', 'mim'
 
 pytest_plugins = [
@@ -89,31 +89,6 @@ def pytest_generate_tests(metafunc):
 @pytest.fixture(autouse=True)
 def isolation_setup(fn_isolation):
     pass
-
-
-def get_pools_by_types():
-    for pool_id in _POOLDATA[_NETWORKS[chain.id]]:
-        _pool_data = _POOLDATA[_NETWORKS[chain.id]][pool_id]
-        pool_type = {
-            "Plain": 0,
-            "ATokenMock": 2,
-            "cERC20": 3,
-            "yERC20": 4,
-            "aETH": 5,
-            "rETH": 6,
-        }.get(_pool_data.get("wrapped_contract", "Plain"), -1)
-        if pool_type == 6:
-            print(pool_id)
-            print(_pool_data["swap_address"])
-            use_rate = [False] * 4
-            for i in range(len(_pool_data["coins"])):
-                use_lending = "wrapped_address" in _pool_data["coins"][i] and \
-                              "underlying_address" in _pool_data["coins"][i] and \
-                              _pool_data["coins"][i]["wrapped_address"] != _pool_data["coins"][i]["underlying_address"]
-                use_rate[i] = use_lending or _pool_data["coins"][i].get("use_rate", False)
-            print(use_rate)
-            print("\n")
-    raise Exception("Success")
 
 
 @pytest.fixture(scope="module")
