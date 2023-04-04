@@ -74,6 +74,26 @@ class _MintableTestTokenOptimism(Contract):
             raise ValueError("Unsupported Token")
 
 
+class _MintableTestTokenXdai(Contract):
+    wrapped = "0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d".lower()
+
+    def __init__(self, address, interface_name):
+        abi = getattr(interface, interface_name).abi
+        self.from_abi(interface_name, address, abi)
+
+        super().__init__(address)
+
+    def _mint_for_testing(self, target, amount, kwargs=None):
+        if self.address.lower() == self.wrapped:  # WXDAI
+            self.transfer(target, amount, {"from": "0xd4e420bBf00b0F409188b338c5D87Df761d6C894"})  # Agave interest bearing WXDAI (agWXDAI)
+        elif hasattr(self, "mint") and hasattr(self, "owner"):  # renERC20
+            self.mint(target, amount, {"from": self.owner()})
+        elif hasattr(self, "mint") and hasattr(self, "minter"):  # CurveLpTokenV5
+            self.mint(target, amount, {"from": self.minter()})
+        else:
+            raise ValueError("Unsupported Token")
+
+
 class _MintableTestTokenPolygon(Contract):
     WMATIC = "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"
 
@@ -251,6 +271,8 @@ def _get_coin_object(coin_address, coin_interface, pool_data, network):
         return _MintableTestTokenEthereum(coin_address, pool_data)
     elif network == "optimism":
         return _MintableTestTokenOptimism(coin_address, coin_interface)
+    elif network == "xdai":
+        return _MintableTestTokenXdai(coin_address, coin_interface)
     elif network == "polygon":
         return _MintableTestTokenPolygon(coin_address, coin_interface)
     elif network == "fantom":

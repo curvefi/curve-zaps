@@ -94,7 +94,7 @@ def test_underlying(
     zap_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
 
     lp_balance = lp_token.balanceOf(margo)
-    if chain.id == 250:  # Fantom
+    if chain.id == 100 or chain.id == 250:  # xDai or Fantom
         assert abs(expected - lp_balance) / lp_balance < 1e-6
     else:
         assert abs(expected - lp_balance) / lp_balance < 1e-8

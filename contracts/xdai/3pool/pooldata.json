@@ -1,0 +1,33 @@
+{
+    "lp_contract": "CurveTokenV2",
+    "swap_address": "0x7f90122BF0700F9E7e1F688fe926940E8839F353",
+    "lp_token_address": "0x1337BedC9D22ecbe766dF105c9623922A27963EC",
+    "gauge_addresses": ["0xb721cc32160ab0da2614cc6ab16ed822aeebc101"],
+    "lp_constructor": {
+        "name": "Curve.fi DAI/USDC/USDT",
+        "symbol": "3Crv"
+    },
+    "coins": [
+        {
+            "name": "WXDAI",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d",
+            "underlying_interface": "WETH"
+        },
+        {
+            "name": "USDC",
+            "decimals": 6,
+            "tethered": false,
+            "underlying_address": "0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83",
+            "underlying_interface": "renERC20"
+        },
+        {
+            "name": "USDT",
+            "decimals": 6,
+            "tethered": true,
+            "underlying_address": "0x4ECaBa5870353805a9F068101A40E0f32ed605C6",
+            "underlying_interface": "renERC20"
+        }
+    ]
+}

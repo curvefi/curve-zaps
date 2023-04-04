@@ -78,6 +78,18 @@ INIT_DATA = {
             [False, True, False, False],   # wstETH
         ],
     },
+    "xdai": {
+        "use_int128": [],
+        "pool_type_addresses": [
+            "0x85bA9Dfb4a3E4541420Fc75Be02E2B42042D7e46",  # rai
+        ],
+        "pool_types": [
+            2,  # rai
+        ],
+        "use_rate": [
+            [True, False, False, False],   # rai
+        ],
+    },
     "polygon": {
         "use_int128": [],
         "pool_type_addresses": [
@@ -136,8 +148,6 @@ INIT_DATA = {
         ],
     },
 }
-
-
 
 
 @pytest.fixture(scope="module")

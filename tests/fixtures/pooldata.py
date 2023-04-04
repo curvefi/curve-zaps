@@ -38,12 +38,15 @@ def wrapped_amounts_to_mint(pool_data, wrapped_decimals, network):
             amt = 10 ** 2
         if pool_data["id"] == "aeth":
             amt = 10 ** 2
-    if network == "arbitrum":
-        if pool_data["id"] == "wsteth":
-            amt = 10 ** 5
     if network == "optimism":
         if pool_data["id"] == "wsteth":
             amt = 10 ** 4
+    if network == "xdai":
+        if pool_data["id"] == "rai":  # Just because it's a very small pool
+            amt = 1000
+    if network == "arbitrum":
+        if pool_data["id"] == "wsteth":
+            amt = 10 ** 5
     if network == "avalanche":
         if pool_data["id"] == "aaveV3":  # Just because it's a very small pool
             amt = 100
@@ -86,6 +89,8 @@ def use_lending(n_coins_underlying, n_coins_wrapped, underlying_coins, wrapped_c
 @pytest.fixture(scope="module")
 def use_rate(pool_data, use_lending, n_coins_underlying, n_coins_wrapped):
     use_rate = [False] * 4
+    if pool_data["id"] == "rai":
+        return [True] + [False] * 3
     if n_coins_underlying == n_coins_wrapped:
         for i in range(n_coins_wrapped):
             use_rate[i] = use_lending[i] or pool_data["coins"][i].get("use_rate", False)
