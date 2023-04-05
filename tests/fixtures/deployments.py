@@ -14,8 +14,8 @@ INIT_DATA = {
         "pool_type_addresses": [
             "0x618788357D0EBd8A37e763ADab3bc575D54c2C7d",  # rai
 
-            "0xeb16ae0052ed37f479f7fe63849198df1765a733",  # saave
             "0xDeBF20617708857ebe4F679508E7b7863a8A8EeE",  # aave
+            "0xeb16ae0052ed37f479f7fe63849198df1765a733",  # saave
 
             "0x2dded6Da1BF5DBdF597C45fcFaa3194e53EcfeAF",  # ib
             "0x52EA46506B9CC5Ef470C5bf89f17Dc28bB35D85C",  # usdt
@@ -25,15 +25,15 @@ INIT_DATA = {
             "0x79a8C46DeA5aDa233ABaFFD40F3A0A2B1e5A4F27",  # busd
             "0x06364f10B501e868329afBc005b3492902d6C763",  # pax
 
-            "0xA96A65c051bF88B4095Ee1f2451C2A9d43F53Ae2",  # ankrETH
+            "0xA96A65c051bF88B4095Ee1f2451C2A9d43F53Ae2",  # aETH
 
             "0xF9440930043eb3997fc70e1339dBb11F341de7A8",  # rETH
         ],
         "pool_types": [
             2,  # rai
 
-            3,  # saave
             3,  # aave
+            3,  # saave
 
             4,  # ib
             4,  # usdt
@@ -43,15 +43,15 @@ INIT_DATA = {
             6,  # busd
             6,  # pax
 
-            7,  # ankrETH
+            7,  # aETH
 
             8,  # rETH
         ],
         "use_rate": [
-            [True, False, False, False],  # rai
+            [True, False, False, False],   # rai
 
-            [False, False, False, False],  # saave
             [False, False, False, False],  # aave
+            [False, False, False, False],  # saave
 
             [True, True, True, False],     # ib
             [True, True, False, False],    # usdt
@@ -61,7 +61,7 @@ INIT_DATA = {
             [True, True, True, True],      # busd
             [True, True, True, False],     # pax
 
-            [False, True, False, False],   # ankrETH
+            [False, True, False, False],   # aETH
 
             [False, True, False, False],   # rETH
         ],

@@ -4,13 +4,13 @@ import pytest
 from brownie import chain
 from brownie.project.main import get_loaded_projects
 
-
-POOLS = ['3pool', 'aave', 'aeth', 'bbtc', 'busd', 'compound', 'dusd', 'gusd', 'hbtc', 'husd', 'ib', 'link', 'musd', 'obtc',
-         'pax', 'pbtc', 'ren', 'reth', 'rsv', 'saave', 'sbtc', 'seth', 'steth', 'susd', 'tbtc', 'usdk', 'usdn', 'usdp', 'usdt',
-         'ust', 'y', 'eurt', 'tusd']
-LENDING_POOLS = ['compound', 'usdt', 'y', 'busd', 'pax', 'aave', 'saave', 'ib']
-META_POOLS = ['gusd', 'husd', 'usdk', 'usdn', 'musd', 'rsv', 'tbtc', 'dusd', 'pbtc', 'bbtc', 'obtc', 'ust', 'usdp', 'rai']
-FACTORY_POOOLS = ['tusd']  # 'frax', 'lusd', 'busdv2', 'alusd', 'mim'
+# 3pool,hbtc,link,sbtc2,seth,steth,susd,usdk,eurs,eurt,fraxusdc + aeth,reth
+PLAIN_POOLS = ['3pool', 'aeth', 'hbtc', 'link', 'reth', 'sbtc2', 'seth', 'steth', 'susd', 'usdk', 'eurs', 'eurt', 'fraxusdc'] + ['aeth', 'reth']
+# aave,saave,ib,usdt,compound,y,busd,pax
+LENDING_POOLS = ['aave', 'saave'] + ['ib', 'usdt', 'compound'] + ['y', 'busd', 'pax']
+# gusd,husd,usdk,musd,rsv,dusd,usdp,rai
+META_POOLS = ['gusd', 'husd', 'usdk', 'musd', 'rsv', 'dusd', 'usdp'] + ['rai']
+FACTORY_META_POOLS = ['tusd']  # 'frax', 'lusd', 'busdv2', 'alusd', 'mim'
 
 pytest_plugins = [
     "fixtures.accounts",
@@ -33,7 +33,7 @@ _NETWORKS = {
 _POOLDATA = {}
 
 _POOLS = {
-    "ethereum": POOLS + LENDING_POOLS + META_POOLS + FACTORY_POOOLS,
+    "ethereum": PLAIN_POOLS + LENDING_POOLS + META_POOLS + FACTORY_META_POOLS,
     "optimism": ["3pool", "wsteth"],
     "xdai": ["3pool", "rai"],
     "polygon": ["aave"],
