@@ -32,8 +32,10 @@ def wrapped_decimals(pool_data):
 def wrapped_amounts_to_mint(pool_data, wrapped_decimals, network):
     amt = 10 ** 6
     if network == "ethereum":
-        if pool_data["id"] in ["busd", "dusd"]:
+        if pool_data["id"] in ["busd", "dusd", "ib"]:
             amt = 10 ** 5
+        if pool_data["id"] == "pax":
+            amt = 10 ** 3
         if pool_data["id"] in ["sbtc", "ren"]:
             amt = 10 ** 2
         if pool_data["id"] == "aeth":

@@ -1,5 +1,5 @@
 import pytest
-from brownie import ETH_ADDRESS, accounts, chain
+from brownie import ETH_ADDRESS, accounts, Contract
 
 
 def _approve(owner, spender, *coins):
@@ -12,17 +12,9 @@ def _approve(owner, spender, *coins):
 # pool setup fixtures
 
 @pytest.fixture(scope="module")
-def mint_margo(margo, underlying_coins, wrapped_coins, wrapped_amounts_to_mint, underlying_amounts_to_mint, is_meta, weth, network):
-    for coin, amount in zip(wrapped_coins, wrapped_amounts_to_mint):
-        if coin == ETH_ADDRESS:
-            # in fork mode, we steal ETH from the wETH contract
-            weth = accounts.at(weth[network], True)
-            weth.transfer(margo, amount)
-            continue
-        if coin.address == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb":
-            coin.transfer(margo, amount, {"from": "0x13e252Df0caFe34116cEc052177b7540aFc75F76"})  # steal
-            continue
-        coin._mint_for_testing(margo, amount, {"from": margo})
+def mint_margo(margo, lp_token, swap_address, underlying_coins, wrapped_coins, wrapped_amounts_to_mint, underlying_amounts_to_mint, is_meta, weth, network):
+
+    # --- UNDERLYING ---
 
     for coin, amount in zip(underlying_coins, underlying_amounts_to_mint):
         if coin in wrapped_coins:
@@ -31,7 +23,36 @@ def mint_margo(margo, underlying_coins, wrapped_coins, wrapped_amounts_to_mint, 
             weth = accounts.at(weth[network], True)
             weth.transfer(margo, amount)
             continue
-        if coin.address == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb":
+        if coin.address == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb":  # ankrETH
+            coin.transfer(margo, amount, {"from": "0x13e252Df0caFe34116cEc052177b7540aFc75F76"})  # steal
+            continue
+        coin._mint_for_testing(margo, amount, {"from": margo})
+
+    # --- WRAPPED ---
+
+    if lp_token.address.lower() == "0x5282a4eF67D9C33135340fB3289cc1711c13638C".lower():  # ib on ethereum
+        mint_amount = sum(wrapped_amounts_to_mint) * 10**10 * 2
+        lp_token.transfer(margo, mint_amount, {"from": "0x6c904b3Bb57865516a0d054CCfE7449e01B85421"})  # steal
+        swap_contract = Contract(swap_address)
+        swap_contract.remove_liquidity_imbalance(wrapped_amounts_to_mint, 2**256 - 1, {"from": margo})
+        lp_token.transfer("0x6c904b3Bb57865516a0d054CCfE7449e01B85421", lp_token.balanceOf(margo), {"from": margo})  # send back excess
+        return
+
+    if lp_token.address.lower() == "0xD905e2eaeBe188fc92179b6350807D8bd91Db0D8".lower():  # pax on ethereum
+        mint_amount = (wrapped_amounts_to_mint[0] + wrapped_amounts_to_mint[3]) + (wrapped_amounts_to_mint[1] + wrapped_amounts_to_mint[2]) * 10**12 * 2
+        lp_token.transfer(margo, mint_amount, {"from": "0x3c43e281787687590E819e8720F9bC64D94Bb7CB"})  # steal
+        swap_contract = Contract(swap_address)
+        swap_contract.remove_liquidity_imbalance(wrapped_amounts_to_mint, 2**256 - 1, {"from": margo})
+        lp_token.transfer("0x3c43e281787687590E819e8720F9bC64D94Bb7CB", lp_token.balanceOf(margo), {"from": margo})  # send back excess
+        return
+
+    for coin, amount in zip(wrapped_coins, wrapped_amounts_to_mint):
+        if coin == ETH_ADDRESS:
+            # in fork mode, we steal ETH from the wETH contract
+            weth = accounts.at(weth[network], True)
+            weth.transfer(margo, amount)
+            continue
+        if coin.address == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb":  # ankrETH
             coin.transfer(margo, amount, {"from": "0x13e252Df0caFe34116cEc052177b7540aFc75F76"})  # steal
             continue
         coin._mint_for_testing(margo, amount, {"from": margo})

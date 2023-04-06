@@ -8,8 +8,9 @@ INIT_DATA = {
             "0x45F783CCE6B7FF23B2ab2D70e416cdb7D6055f51",  # y
             "0x79a8C46DeA5aDa233ABaFFD40F3A0A2B1e5A4F27",  # busd
             "0xA5407eAE9Ba41422680e2e00537571bcC53efBfD",  # susd
-            "0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714",  # sbtc
+            "0x06364f10B501e868329afBc005b3492902d6C763",  # pax
             "0x93054188d876f558f4a66B2EF1d97d16eDf0895B",  # ren
+            "0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714",  # sbtc
         ],
         "pool_type_addresses": [
             "0x618788357D0EBd8A37e763ADab3bc575D54c2C7d",  # rai
