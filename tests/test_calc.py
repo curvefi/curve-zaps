@@ -37,7 +37,7 @@ def test_wrapped(
         base_pool_token = base_pool_data.get("lp_token_address")
         expected = zap.calc_token_amount_meta(swap_address, lp_token.address, wrapped_amounts, n_coins_wrapped, base_pool_address, base_pool_token, True, False)
     else:
-        expected = zap.calc_token_amount(swap_address, lp_token.address, wrapped_amounts, n_coins_wrapped, True)
+        expected = zap.calc_token_amount(swap_address, lp_token.address, wrapped_amounts, n_coins_wrapped, True, False)
     swap_contract.add_liquidity(wrapped_amounts[:n_coins_wrapped], 0, {"from": margo, "value": value})
 
     lp_balance = lp_token.balanceOf(margo)
@@ -55,7 +55,7 @@ def test_wrapped(
         base_pool_token = base_pool_data.get("lp_token_address")
         expected = zap.calc_token_amount_meta(swap_address, lp_token.address, withdraw_amounts, n_coins_wrapped, base_pool_address, base_pool_token, False, False)
     else:
-        expected = zap.calc_token_amount(swap_address, lp_token.address, withdraw_amounts, n_coins_wrapped, False)
+        expected = zap.calc_token_amount(swap_address, lp_token.address, withdraw_amounts, n_coins_wrapped, False, False)
     swap_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_wrapped], 2**256 - 1, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
     if True in use_lending:
@@ -81,36 +81,50 @@ def test_underlying(
         base_pool_data,
         is_meta,
         is_factory,
+        use_lending,
         max_coins,
 ):
-    if not is_meta:
+    if not is_meta and not (True in use_lending and deposit_address != swap_address):  # meta + ib,usdt,compound,y,busd,pax
         return
 
     underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)] + [0] * (max_coins - n_coins_underlying)
     value = underlying_amounts[underlying_coins.index(brownie.ETH_ADDRESS)] if brownie.ETH_ADDRESS in underlying_coins else 0
-    zap_contract = Contract(deposit_address)
+    deposit_contract = Contract(deposit_address)
+
+    deposit_contract_lp_balance = lp_token.balanceOf(deposit_contract)  # zap can have some dust
 
     # Deposit
-    base_pool_address = base_pool_data.get("swap_address")
-    base_pool_token = base_pool_data.get("lp_token_address")
-    expected = zap.calc_token_amount_meta(swap_address, lp_token.address, underlying_amounts, n_coins_underlying, base_pool_address, base_pool_token, True, True)
-    if is_factory:
-        zap_contract.add_liquidity(swap_address, underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
+    if is_meta:
+        base_pool_address = base_pool_data.get("swap_address")
+        base_pool_token = base_pool_data.get("lp_token_address")
+        expected = zap.calc_token_amount_meta(swap_address, lp_token.address, underlying_amounts, n_coins_underlying, base_pool_address, base_pool_token, True, True)
     else:
-        zap_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
+        expected = zap.calc_token_amount(swap_address, lp_token.address, underlying_amounts, n_coins_underlying, True, True)
+    if is_factory:
+        deposit_contract.add_liquidity(swap_address, underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
+    else:
+        deposit_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
 
     lp_balance = lp_token.balanceOf(margo)
-    if chain.id == 100 or chain.id == 250:  # xDai or Fantom
-        assert abs(expected - lp_balance) / lp_balance < 1e-6
+    lp_balance_no_dust = lp_balance - deposit_contract_lp_balance
+    if True in use_lending:
+        assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-5
+    elif chain.id == 100 or chain.id == 250:  # xDai or Fantom
+        assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-6
     else:
-        assert abs(expected - lp_balance) / lp_balance < 1e-8
+        assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-8
 
     # Withdraw
     withdraw_amounts = list(map(lambda x: int(x / 1.02), underlying_amounts))
-    expected = zap.calc_token_amount_meta(swap_address, lp_token.address, withdraw_amounts, n_coins_underlying, base_pool_address, base_pool_token, False, True)
-    if is_factory:
-        zap_contract.remove_liquidity_imbalance(swap_address, withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
+    if is_meta:
+        base_pool_address = base_pool_data.get("swap_address")
+        base_pool_token = base_pool_data.get("lp_token_address")
+        expected = zap.calc_token_amount_meta(swap_address, lp_token.address, withdraw_amounts, n_coins_underlying, base_pool_address, base_pool_token, False, True)
     else:
-        zap_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
+        expected = zap.calc_token_amount(swap_address, lp_token.address, withdraw_amounts, n_coins_underlying, False, True)
+    if is_factory:
+        deposit_contract.remove_liquidity_imbalance(swap_address, withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
+    else:
+        deposit_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
     assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-7

@@ -317,6 +317,24 @@ def get_D_mem(pool: address, rates: uint256[MAX_COINS], _balances: uint256[MAX_C
 
 @internal
 @view
+def _wrapped_amounts(pool_type: uint8, coins: address[MAX_COINS], amounts: uint256[MAX_COINS], rates: uint256[MAX_COINS], use_rate: bool[MAX_COINS], n_coins: uint256) -> uint256[MAX_COINS]:
+    result: uint256[MAX_COINS] = amounts
+    for i in range(MAX_COINS):
+        if i >= n_coins:
+            break
+        underlying_coin: address = coins[i]
+        if use_rate[i]:
+            if pool_type == 4 or pool_type == 5:
+                underlying_coin = cERC20(coins[i]).underlying()
+            if pool_type == 6:
+                underlying_coin = yERC20(coins[i]).token()
+            result[i] = amounts[i] * PRECISION * PRECISION / 10 ** cERC20(underlying_coin).decimals() / rates[i]
+
+    return result
+
+
+@internal
+@view
 def _calc_token_amount(
         pool: address,
         token: address,
@@ -326,6 +344,7 @@ def _calc_token_amount(
         use_rate: bool[MAX_COINS],
         base_pool: address,
         deposit: bool,
+        use_underlying: bool = False,  # Only for ib,usdt,compound,y,busd,pax
 ) -> uint256:
     """
     @notice Method to calculate addition or reduction in token supply at
@@ -357,13 +376,16 @@ def _calc_token_amount(
     rates: uint256[MAX_COINS] = self._rates(pool, pool_type, coins, n_coins, use_rate, base_pool)
     D0: uint256 = self.get_D_mem(pool, rates, old_balances, n_coins)
 
+    _amounts: uint256[MAX_COINS] = amounts
+    if use_underlying:
+        _amounts = self._wrapped_amounts(pool_type, coins, amounts, rates, use_rate, n_coins)
     for i in range(MAX_COINS):
         if i >= n_coins:
             break
         if deposit:
-            new_balances[i] += amounts[i]
+            new_balances[i] += _amounts[i]
         else:
-            new_balances[i] -= amounts[i]
+            new_balances[i] -= _amounts[i]
     D1: uint256 = self.get_D_mem(pool, rates, new_balances, n_coins)
 
     # We need to recalculate the invariant accounting for fees
@@ -406,6 +428,7 @@ def calc_token_amount(
         amounts: uint256[MAX_COINS],
         n_coins: uint256,
         deposit: bool,
+        use_underlying: bool,
 ) -> uint256:
     """
     @notice Method to calculate addition or reduction in token supply at
@@ -417,7 +440,7 @@ def calc_token_amount(
     @param deposit True - add_liquidity, False - remove_liquidity_imbalance
     @return Expected LP token amount to mint/burn
     """
-    return self._calc_token_amount(pool, token, amounts, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], empty(address), deposit)
+    return self._calc_token_amount(pool, token, amounts, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], empty(address), deposit, use_underlying)
 
 
 @external
