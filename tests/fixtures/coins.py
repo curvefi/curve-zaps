@@ -18,6 +18,10 @@ WRAPPED_COIN_METHODS = {
 
 # public fixtures - these can be used when testing
 
+@pytest.fixture(scope="module")
+def max_coins():
+    return 5
+
 
 @pytest.fixture(scope="module")
 def wrapped_coins(pool_data, _underlying_coins, network):

@@ -38,8 +38,10 @@ def wrapped_amounts_to_mint(pool_data, wrapped_decimals, network):
             amt = 10 ** 2
         if pool_data["id"] == "aeth":
             amt = 10 ** 2
-        if "btc" in pool_data["id"]:
+        if "btc" in pool_data["id"] or pool_data["id"] == "factory-v2-247":
             amt = 10
+        if pool_data["id"] == "factory-v2-235":  # Just because it's a very small pool
+            amt = 50
     if network == "optimism":
         if pool_data["id"] == "wsteth":
             amt = 10 ** 4
@@ -80,8 +82,13 @@ def is_meta(pool_data):
 
 
 @pytest.fixture(scope="module")
-def use_lending(n_coins_underlying, n_coins_wrapped, underlying_coins, wrapped_coins):
-    use_lending = [False] * 4
+def is_factory(pool_data):
+    return "factory" in pool_data.get("pool_types", [])
+
+
+@pytest.fixture(scope="module")
+def use_lending(n_coins_underlying, n_coins_wrapped, underlying_coins, wrapped_coins, max_coins):
+    use_lending = [False] * max_coins
     if n_coins_underlying == n_coins_wrapped:
         for i in range(n_coins_wrapped):
             use_lending[i] = underlying_coins[i] != wrapped_coins[i]
@@ -89,10 +96,10 @@ def use_lending(n_coins_underlying, n_coins_wrapped, underlying_coins, wrapped_c
 
 
 @pytest.fixture(scope="module")
-def use_rate(pool_data, use_lending, n_coins_underlying, n_coins_wrapped):
-    use_rate = [False] * 4
+def use_rate(pool_data, use_lending, n_coins_underlying, n_coins_wrapped, max_coins):
+    use_rate = [False] * max_coins
     if pool_data["id"] == "rai":
-        return [True] + [False] * 3
+        return [True] + [False] * (max_coins - 1)
     if n_coins_underlying == n_coins_wrapped:
         for i in range(n_coins_wrapped):
             use_rate[i] = use_lending[i] or pool_data["coins"][i].get("use_rate", False)

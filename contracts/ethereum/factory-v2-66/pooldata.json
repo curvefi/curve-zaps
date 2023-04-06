@@ -1,0 +1,27 @@
+{
+    "lp_contract": "CurveTokenV2",
+    "swap_address": "0xb9446c4ef5ebe66268da6700d26f96273de3d571",
+    "lp_token_address": "0xb9446c4ef5ebe66268da6700d26f96273de3d571",
+    "gauge_addresses": ["0x1e212e054d74ed136256fc5a5dddb4867c6e003f"],
+    "coins": [
+        {
+            "name": "agEUR",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0x1a7e4e63778b4f12a199c062f3efdd288afcbce8"
+        },
+        {
+            "name": "EURT",
+            "decimals": 6,
+            "tethered": false,
+            "underlying_address": "0xc581b735a1688071a1746c968e0798d642ede491"
+
+        },
+        {
+            "name": "EURS",
+            "decimals": 2,
+            "tethered": true,
+            "underlying_address": "0xdb25f211ab05b1c97d595516f45794528a807ad8"
+        }
+    ]
+}

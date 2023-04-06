@@ -8,7 +8,7 @@ from datetime import timedelta
 pytestmark = pytest.mark.usefixtures("mint_margo", "approve_margo")
 
 
-@given(wrapped_amounts=strategy('uint256[4]', min_value=10**16, max_value=10**6 * 10**18))
+@given(wrapped_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**6 * 10**18))
 @settings(deadline=timedelta(seconds=1000))
 def test_wrapped(
         zap,
@@ -24,9 +24,10 @@ def test_wrapped(
         base_pool_data,
         use_lending,
         use_rate,
+        max_coins,
 ):
     wrapped_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(wrapped_amounts, wrapped_decimals)]
-    wrapped_amounts = [min(x, y) for x, y in zip(wrapped_amounts, wrapped_amounts_to_mint)] + [0] * (4 - n_coins_wrapped)
+    wrapped_amounts = [min(x, y) for x, y in zip(wrapped_amounts, wrapped_amounts_to_mint)] + [0] * (max_coins - n_coins_wrapped)
     value = wrapped_amounts[wrapped_coins.index(brownie.ETH_ADDRESS)] if brownie.ETH_ADDRESS in wrapped_coins else 0
     swap_contract = Contract(swap_address)
 
@@ -65,7 +66,7 @@ def test_wrapped(
         assert abs(expected - lp_balance_diff) <= 2
 
 
-@given(underlying_amounts=strategy('uint256[4]', min_value=10**16, max_value=10**5 * 10**18))
+@given(underlying_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**5 * 10**18))
 @settings(deadline=timedelta(seconds=1000))
 def test_underlying(
         zap,
@@ -79,11 +80,13 @@ def test_underlying(
         underlying_decimals,
         base_pool_data,
         is_meta,
+        is_factory,
+        max_coins,
 ):
     if not is_meta:
         return
 
-    underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)] + [0] * (4 - n_coins_underlying)
+    underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)] + [0] * (max_coins - n_coins_underlying)
     value = underlying_amounts[underlying_coins.index(brownie.ETH_ADDRESS)] if brownie.ETH_ADDRESS in underlying_coins else 0
     zap_contract = Contract(deposit_address)
 
@@ -91,7 +94,10 @@ def test_underlying(
     base_pool_address = base_pool_data.get("swap_address")
     base_pool_token = base_pool_data.get("lp_token_address")
     expected = zap.calc_token_amount_meta(swap_address, lp_token.address, underlying_amounts, n_coins_underlying, base_pool_address, base_pool_token, True, True)
-    zap_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
+    if is_factory:
+        zap_contract.add_liquidity(swap_address, underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
+    else:
+        zap_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
 
     lp_balance = lp_token.balanceOf(margo)
     if chain.id == 100 or chain.id == 250:  # xDai or Fantom
@@ -102,6 +108,9 @@ def test_underlying(
     # Withdraw
     withdraw_amounts = list(map(lambda x: int(x / 1.02), underlying_amounts))
     expected = zap.calc_token_amount_meta(swap_address, lp_token.address, withdraw_amounts, n_coins_underlying, base_pool_address, base_pool_token, False, True)
-    zap_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
+    if is_factory:
+        zap_contract.remove_liquidity_imbalance(swap_address, withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
+    else:
+        zap_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
     assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-7

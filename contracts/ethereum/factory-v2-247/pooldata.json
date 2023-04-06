@@ -1,0 +1,23 @@
+{
+    "base_pool": "sbtc2",
+    "pool_types": ["meta", "factory"],
+    "swap_address": "0xf95aaa7ebb1620e46221b73588502960ef63dba0",
+    "lp_token_address": "0xf95aaa7ebb1620e46221b73588502960ef63dba0",
+    "zap_address": "0xA2d40Edbf76C6C0701BA8899e2d059798eBa628e",
+    "gauge_addresses": ["0x0ec3d1f5d737593ff4aedb8e22eb33a1886ddb9a"],
+    "lp_contract": "CurveTokenV2",
+    "coins": [
+        {
+            "name": "tBTC",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0x18084fba666a33d37592fa2633fd49a74dd93a88"
+        },
+        {
+            "name": "sbtc2Crv",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x051d7e5609917Bd9b73f04BAc0DED8Dd46a74301"
+        }
+    ]
+}

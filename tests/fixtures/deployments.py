@@ -48,22 +48,22 @@ INIT_DATA = {
             8,  # rETH
         ],
         "use_rate": [
-            [True, False, False, False],   # rai
+            [True, False, False, False, False],   # rai
 
-            [False, False, False, False],  # aave
-            [False, False, False, False],  # saave
+            [False, False, False, False, False],  # aave
+            [False, False, False, False, False],  # saave
 
-            [True, True, True, False],     # ib
-            [True, True, False, False],    # usdt
-            [True, True, False, False],    # compound
+            [True, True, True, False, False],     # ib
+            [True, True, False, False, False],    # usdt
+            [True, True, False, False, False],    # compound
 
-            [True, True, True, True],      # y
-            [True, True, True, True],      # busd
-            [True, True, True, False],     # pax
+            [True, True, True, True, False],      # y
+            [True, True, True, True, False],      # busd
+            [True, True, True, False, False],     # pax
 
-            [False, True, False, False],   # aETH
+            [False, True, False, False, False],   # aETH
 
-            [False, True, False, False],   # rETH
+            [False, True, False, False, False],   # rETH
         ],
     },
     "optimism": {
@@ -75,7 +75,7 @@ INIT_DATA = {
             9,  # wstETH
         ],
         "use_rate": [
-            [False, True, False, False],   # wstETH
+            [False, True, False, False, False],   # wstETH
         ],
     },
     "xdai": {
@@ -87,7 +87,7 @@ INIT_DATA = {
             2,  # rai
         ],
         "use_rate": [
-            [True, False, False, False],   # rai
+            [True, False, False, False, False],   # rai
         ],
     },
     "polygon": {
@@ -99,7 +99,7 @@ INIT_DATA = {
             3,  # aave
         ],
         "use_rate": [
-            [False, False, False, False],   # aave
+            [False, False, False, False, False],   # aave
         ],
     },
     "fantom": {
@@ -115,9 +115,9 @@ INIT_DATA = {
             5,  # ib
         ],
         "use_rate": [
-            [False, False, False, False],  # geist
+            [False, False, False, False, False],  # geist
 
-            [True, True, True, False],     # ib
+            [True, True, True, False, False],     # ib
         ],
     },
     "arbitrum": {
@@ -129,7 +129,7 @@ INIT_DATA = {
             9,  # wstETH
         ],
         "use_rate": [
-            [False, True, False, False],   # wstETH
+            [False, True, False, False, False],   # wstETH
         ],
     },
     "avalanche": {
@@ -143,15 +143,15 @@ INIT_DATA = {
             3,  # aaveV3
         ],
         "use_rate": [
-            [False, False, False, False],   # aave
-            [False, False, False, False],   # aaveV3
+            [False, False, False, False, False],   # aave
+            [False, False, False, False, False],   # aaveV3
         ],
     },
 }
 
 
 @pytest.fixture(scope="module")
-def zap(CalcTokenAmountZap, alice, network):
+def zap(CalcTokenAmountZap, alice, network, max_coins):
     use_int128 = INIT_DATA[network]["use_int128"]
     pool_type_addresses = INIT_DATA[network]["pool_type_addresses"]
     pool_types = INIT_DATA[network]["pool_types"]
@@ -160,6 +160,6 @@ def zap(CalcTokenAmountZap, alice, network):
     use_int128 += [brownie.ZERO_ADDRESS] * (20 - len(use_int128))
     pool_type_addresses += [brownie.ZERO_ADDRESS] * (20 - len(pool_type_addresses))
     pool_types += [0] * (20 - len(pool_types))
-    use_rate += [[False] * 4] * (20 - len(use_rate))
+    use_rate += [[False] * max_coins] * (20 - len(use_rate))
 
     return CalcTokenAmountZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, {'from': alice})

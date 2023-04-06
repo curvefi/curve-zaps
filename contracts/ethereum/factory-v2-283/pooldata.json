@@ -1,0 +1,20 @@
+{
+    "lp_contract": "CurveTokenV2",
+    "swap_address": "0x971add32ea87f10bd192671630be3be8a11b8623",
+    "lp_token_address": "0x971add32ea87f10bd192671630be3be8a11b8623",
+    "gauge_addresses": ["0xfb18127c1471131468a1aad4785c19678e521d86"],
+    "coins": [
+        {
+            "name": "CRV",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0xd533a949740bb3306d119cc777fa900ba034cd52"
+        },
+        {
+            "name": "cvxCRV",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0x62b9c7356a2dc64a1969e19c23e4f579f9810aa7"
+        }
+    ]
+}

@@ -49,7 +49,8 @@ interface rETH:
     def getExchangeRate() -> uint256: view
 
 
-MAX_COINS: constant(uint256) = 4
+MAX_COINS: constant(uint256) = 5
+FALSE_ARRAY: constant(bool[5]) = [False, False, False, False, False]
 PRECISION: constant(uint256) = 10 ** 18  # The precision to convert to
 FEE_DENOMINATOR: constant(uint256) = 10 ** 10
 
@@ -105,8 +106,17 @@ def _rates_plain(coins: address[MAX_COINS], n_coins: uint256) -> uint256[MAX_COI
 
 @internal
 @view
-def _rates_meta(coin1: address, base_pool: address) -> uint256[MAX_COINS]:
-    return [PRECISION * PRECISION / 10 ** self.get_decimals(coin1), Pool(base_pool).get_virtual_price(), 0, 0]
+def _rates_meta(coin1: address, base_pool: address, n_coins: uint256) -> uint256[MAX_COINS]:
+    result: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
+    for i in range(MAX_COINS):
+        if i >= n_coins:
+            break
+        if i == 0:
+            result[i] = PRECISION * PRECISION / 10 ** self.get_decimals(coin1)
+        else:
+            result[i] = Pool(base_pool).get_virtual_price()  # LP token
+
+    return result
 
 
 @internal
@@ -215,7 +225,7 @@ def _rates(pool: address, pool_type: uint8, coins: address[MAX_COINS], n_coins: 
     if pool_type == 0:
         return self._rates_plain(coins, n_coins)
     elif pool_type == 1:
-        return self._rates_meta(coins[0], base_pool)
+        return self._rates_meta(coins[0], base_pool, n_coins)
     elif pool_type == 2:
         return self._rates_rai(pool, base_pool, n_coins, use_rate)
     elif pool_type == 3:
@@ -436,7 +446,7 @@ def calc_token_amount_meta(
     """
     if not use_underlying:
         if self.POOL_TYPE[pool] == 0:
-            return self._calc_token_amount(pool, token, amounts, n_coins, 1, [False, False, False, False], base_pool, deposit)
+            return self._calc_token_amount(pool, token, amounts, n_coins, 1, FALSE_ARRAY, base_pool, deposit)
         else:
             return self._calc_token_amount(pool, token, amounts, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], base_pool, deposit)
 
@@ -445,11 +455,11 @@ def calc_token_amount_meta(
     meta_amounts[0] = amounts[0]
     for i in range(MAX_COINS - 1):
         base_amounts[i] = amounts[i + 1]
-    _base_tokens: uint256 = self._calc_token_amount(base_pool, base_token, base_amounts, n_coins - 1, self.POOL_TYPE[base_pool], [False, False, False, False], empty(address), deposit)
+    _base_tokens: uint256 = self._calc_token_amount(base_pool, base_token, base_amounts, n_coins - 1, self.POOL_TYPE[base_pool], FALSE_ARRAY, empty(address), deposit)
     meta_amounts[1] = _base_tokens
 
     if self.POOL_TYPE[pool] == 0:
-        return self._calc_token_amount(pool, token, meta_amounts, 2, 1, [False, False, False, False], base_pool, deposit)
+        return self._calc_token_amount(pool, token, meta_amounts, 2, 1, FALSE_ARRAY, base_pool, deposit)
     else:
         return self._calc_token_amount(pool, token, meta_amounts, 2, self.POOL_TYPE[pool], self.USE_RATE[pool], base_pool, deposit)
 

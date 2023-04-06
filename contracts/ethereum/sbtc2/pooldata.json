@@ -1,13 +1,8 @@
 {
-    "lp_contract": "CurveTokenV1",
-    "wrapped_contract": "renERC20",
+    "lp_contract": "CurveTokenV2",
     "swap_address": "0xf253f83AcA21aAbD2A20553AE0BF7F65C755A07F",
     "lp_token_address": "0x051d7e5609917Bd9b73f04BAc0DED8Dd46a74301",
     "gauge_addresses": ["0x6D787113F23bED1D5e1530402B3f364D0A6e5Af3"],
-    "lp_constructor": {
-        "name": "Curve.fi renBTC/wBTC/sBTC",
-        "symbol": "crvRenWSBTC"
-    },
     "coins": [
         {
             "name": "wBTC",
