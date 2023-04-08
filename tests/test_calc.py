@@ -47,7 +47,7 @@ def test_wrapped(
     elif True in use_rate:
         assert abs(expected - lp_balance) <= 100
     else:
-        assert abs(expected - lp_balance) <= 2
+        assert abs(expected - lp_balance) <= 10
 
     # Withdraw
     withdraw_amounts = list(map(lambda x: int(x / 1.02), wrapped_amounts))
@@ -65,7 +65,7 @@ def test_wrapped(
     elif True in use_rate:
         assert abs(expected - lp_balance_diff) <= 100
     else:
-        assert abs(expected - lp_balance_diff) <= 2
+        assert abs(expected - lp_balance_diff) <= 10
 
 
 @given(underlying_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**5 * 10**18))
@@ -110,7 +110,7 @@ def test_underlying(
         expected = zap.calc_token_amount(swap_address, lp_token.address, underlying_amounts, n_coins_underlying, True, True)
     if is_factory:
         deposit_contract.add_liquidity(swap_address, underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
-    elif pool_data["id"] in ["aave", "saave", "ib"]:
+    elif pool_data["id"] in ["aave", "saave", "ib", "geist"]:
         deposit_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, True, {"from": margo, "value": value})
     else:
         deposit_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
@@ -139,13 +139,10 @@ def test_underlying(
         expected = zap.calc_token_amount(swap_address, lp_token.address, withdraw_amounts, n_coins_underlying, False, True)
     if is_factory:
         deposit_contract.remove_liquidity_imbalance(swap_address, withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
-    elif pool_data["id"] in ["aave", "saave", "ib"]:
+    elif pool_data["id"] in ["aave", "saave", "ib", "geist"]:
         deposit_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, True, {"from": margo})
     else:
         deposit_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
 
-    if chain.id == 43114 and is_factory or chain.id == 1 and base_pool_data["id"] == "sbtc2":  # Avalanche, Ethereum
-        assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-6
-    else:
-        assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-7
+    assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-6

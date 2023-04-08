@@ -65,7 +65,7 @@ class _MintableTestTokenOptimism(Contract):
 
     def _mint_for_testing(self, target, amount, kwargs=None):
         if self.address.lower() == "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1".lower():  # DAI
-            self.transfer(target, amount, {"from": "0xd08cd45925132537ea241179b19ab3a33ad97f3d"})
+            self.transfer(target, amount, {"from": "0x7b7b957c284c2c227c980d6e2f804311947b84d0"})
         elif hasattr(self, "l2Bridge"):  # OptimismBridgeToken
             self.mint(target, amount, {"from": self.l2Bridge()})
         elif hasattr(self, "bridge"):  # OptimismBridgeToken2

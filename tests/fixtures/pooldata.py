@@ -68,6 +68,12 @@ def underlying_amounts_to_mint(pool_data, underlying_decimals, network):
             amt = 10 ** 2
         if pool_data["id"] == "factory-v2-247":
             amt = 10
+    if network == "arbitrum":
+        if pool_data["id"] == "wsteth":
+            amt = 10 ** 5
+    if network == "avalanche":
+        if pool_data["id"] == "aaveV3":  # Just because it's a very small pool
+            amt = 100
     return [amt * 10 ** d for d in underlying_decimals]
 
 

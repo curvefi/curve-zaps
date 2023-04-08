@@ -18,10 +18,14 @@ def mint_margo(margo, lp_token, swap_address, underlying_coins, wrapped_coins, w
 
     for coin, amount in zip(underlying_coins, underlying_amounts_to_mint):
         if coin in wrapped_coins:
-            continue
+            balance = margo.balance()
+            if coin != ETH_ADDRESS:
+                balance = coin.balanceOf(margo)
+            if balance >= amount:
+                continue
         if coin == ETH_ADDRESS:
-            weth = accounts.at(weth[network], True)
-            weth.transfer(margo, amount)
+            _weth = accounts.at(weth[network], True)
+            _weth.transfer(margo, amount)
             continue
         if network == "ethereum":
             if coin.address.lower() == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb".lower():  # ankrETH
@@ -50,8 +54,8 @@ def mint_margo(margo, lp_token, swap_address, underlying_coins, wrapped_coins, w
     for coin, amount in zip(wrapped_coins, wrapped_amounts_to_mint):
         if coin == ETH_ADDRESS:
             # in fork mode, we steal ETH from the wETH contract
-            weth = accounts.at(weth[network], True)
-            weth.transfer(margo, amount)
+            _weth = accounts.at(weth[network], True)
+            _weth.transfer(margo, amount)
             continue
         if network == "ethereum":
             if coin.address.lower() == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb".lower():  # ankrETH

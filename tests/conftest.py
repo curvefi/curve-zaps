@@ -4,11 +4,11 @@ import pytest
 from brownie import chain
 from brownie.project.main import get_loaded_projects
 
-# 3pool,hbtc,link,sbtc2,seth,steth,susd,usdk,eurs,eurt,fraxusdc + aeth,reth
-PLAIN_POOLS = ['3pool', 'aeth', 'hbtc', 'link', 'reth', 'sbtc2', 'seth', 'steth', 'susd', 'usdk', 'eurs', 'eurt', 'fraxusdc'] + ['aeth', 'reth']
+# 3pool,hbtc,link,sbtc2,seth,steth,susd,eurs,eurt,fraxusdc + aeth,reth
+PLAIN_POOLS = ['3pool', 'aeth', 'hbtc', 'link', 'reth', 'sbtc2', 'seth', 'steth', 'susd', 'eurs', 'eurt', 'fraxusdc'] + ['aeth', 'reth']
 # aave,saave,ib,usdt,compound,y,busd,pax
 LENDING_POOLS = ['aave', 'saave'] + ['ib', 'usdt', 'compound'] + ['y', 'busd', 'pax']
-# gusd,husd,usdk,musd,rsv,dusd,usdp,rai
+# gusd,husd,usdk,musd,rsv,dusd,usdp + rai
 META_POOLS = ['gusd', 'husd', 'usdk', 'musd', 'rsv', 'dusd', 'usdp'] + ['rai']
 # factory-v2-283,factory-v2-66,factory-v2-235
 FACTORY_PLAIN_POOLS = ['factory-v2-283', 'factory-v2-66', 'factory-v2-235']  # cvxCrv/Crv (2 coins), 3EURpool (3 coins), CRV booster (4 coins)
