@@ -110,6 +110,8 @@ class _MintableTestTokenPolygon(Contract):
     def _mint_for_testing(self, target, amount, kwargs=None):
         if self.address.lower() == self.WMATIC.lower():  # WMATIC
             self.transfer(target, amount, {"from": "0xadbf1854e5883eb8aa7baf50705338739e558e5b"})
+        elif self.address.lower() == "0xb5dfabd7ff7f83bab83995e72a52b97abb7bcf63".lower():  # USDR
+            self.transfer(target, amount, {"from": "0xaf0d9d65fc54de245cda37af3d18cbec860a4d4b"})
         elif hasattr(self, "getRoleMember"):  # BridgeToken
             role = "0x8f4f2da22e8ac8f11e15f9fc141cddbb5deea8800186560abb6e68c5496619a9"
             minter = self.getRoleMember(role, 0)
@@ -128,7 +130,7 @@ class _MintableTestTokenPolygon(Contract):
             amUSDC = _MintableTestTokenPolygon(pool.coins(1), "AToken")
             amUSDT = _MintableTestTokenPolygon(pool.coins(2), "AToken")
 
-            amounts = [int(amount / 3), int(amount / 10**12 / 3), int(amount / 10**12 / 3)]
+            amounts = [int(amount / 3 * 1.2), int(amount / 10**12 / 3 * 1.2), int(amount / 10**12 / 3 * 1.2)]
 
             amDAI._mint_for_testing(target, amounts[0])
             amUSDC._mint_for_testing(target, amounts[1])
@@ -139,6 +141,8 @@ class _MintableTestTokenPolygon(Contract):
             amUSDT.approve(pool, amounts[2], {"from": target})
 
             pool.add_liquidity(amounts, 0, {"from": target})
+            if self.balanceOf(target) < amount:
+                raise Exception("Not enough aave LP minted")
         elif hasattr(self, "mint"):  # renERC20
             self.mint(target, amount, {"from": self.owner()})
         else:

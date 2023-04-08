@@ -1,0 +1,25 @@
+{
+    "base_pool": "aave",
+    "pool_types": ["meta", "factory"],
+    "swap_address": "0x447646e84498552e62ecf097cc305eabfff09308",
+    "lp_token_address": "0x447646e84498552e62ecf097cc305eabfff09308",
+    "zap_address": "0x5ab5C56B9db92Ba45a0B46a207286cD83C15C939",
+    "gauge_addresses": ["0x93db264ee9c42092dc963517885be167b5bf62db"],
+    "lp_contract": "CurveTokenV2",
+    "coins": [
+        {
+            "name": "miMATIC",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0xa3fa99a148fa48d14ed51d610c367c61876997f1",
+            "underlying_interface": "renERC20"
+        },
+        {
+            "name": "am3CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "wrapped_address": "0xE7a24EF0C5e95Ffb0f6684b813A78F2a3AD7D171",
+            "wrapped_interface": "CurveLpToken"
+        }
+    ]
+}

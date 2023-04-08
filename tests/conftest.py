@@ -39,7 +39,7 @@ _POOLS = {
     "ethereum": PLAIN_POOLS + LENDING_POOLS + META_POOLS + FACTORY_PLAIN_POOLS + FACTORY_META_POOLS,
     "optimism": ["3pool", "wsteth"],
     "xdai": ["3pool", "rai"],
-    "polygon": ["aave"],
+    "polygon": ["aave", "factory-v2-107", "factory-v2-339"],
     "fantom": ["2pool", "fusdt", "ib", "geist"],
     "arbitrum": ["2pool", "wsteth"],
     "avalanche": ["aave", "aaveV3"],
@@ -69,7 +69,7 @@ def pytest_sessionstart():
         for path in [i for i in project._path.glob(f"contracts/{network}/*") if i.is_dir()]:
             with path.joinpath("pooldata.json").open() as fp:
                 _POOLDATA[network][path.name] = json.load(fp)
-                _POOLDATA[network][path.name].update(name=path.name)
+                _POOLDATA[network][path.name].update(id=path.name)
 
         for _, data in _POOLDATA[network].items():
             if "base_pool" in data:
@@ -87,7 +87,7 @@ def pytest_generate_tests(metafunc):
 
     for pool in params:
         if pool not in _POOLS[network]:
-            raise ValueError(f"Invalid pool name: {pool}")
+            raise ValueError(f"Invalid pool id: {pool}")
 
     metafunc.parametrize("pool_data", params, indirect=True, scope="session")
 
@@ -99,7 +99,6 @@ def isolation_setup(fn_isolation):
 
 @pytest.fixture(scope="module")
 def pool_data(request):
-    _POOLDATA[_NETWORKS[chain.id]][request.param]["id"] = request.param
     return _POOLDATA[_NETWORKS[chain.id]][request.param]
 
 

@@ -16,11 +16,12 @@ def test_wrapped(
         lp_token,
         margo,
         n_coins_wrapped,
-        wrapped_amounts_to_mint,
         wrapped_coins,
         wrapped_amounts,
+        wrapped_amounts_to_mint,
         wrapped_decimals,
         is_meta,
+        is_factory,
         base_pool_data,
         use_lending,
         use_rate,
@@ -41,7 +42,7 @@ def test_wrapped(
     swap_contract.add_liquidity(wrapped_amounts[:n_coins_wrapped], 0, {"from": margo, "value": value})
 
     lp_balance = lp_token.balanceOf(margo)
-    if True in use_lending:
+    if True in use_lending or is_meta and base_pool_data["id"] == "aave":
         assert abs(expected - lp_balance) / lp_balance < 1e-7
     elif True in use_rate:
         assert abs(expected - lp_balance) <= 100
@@ -58,7 +59,7 @@ def test_wrapped(
         expected = zap.calc_token_amount(swap_address, lp_token.address, withdraw_amounts, n_coins_wrapped, False, False)
     swap_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_wrapped], 2**256 - 1, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
-    if True in use_lending:
+    if True in use_lending or is_meta and base_pool_data["id"] == "aave":
         assert abs(expected - lp_balance_diff) < 10 ** 15
     elif True in use_rate:
         assert abs(expected - lp_balance_diff) <= 100
@@ -77,6 +78,7 @@ def test_underlying(
         n_coins_underlying,
         underlying_coins,
         underlying_amounts,
+        underlying_amounts_to_mint,
         underlying_decimals,
         base_pool_data,
         is_meta,
@@ -88,6 +90,7 @@ def test_underlying(
         return
 
     underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)] + [0] * (max_coins - n_coins_underlying)
+    underlying_amounts = [min(x, y) for x, y in zip(underlying_amounts, underlying_amounts_to_mint)] + [0] * (max_coins - n_coins_underlying)
     value = underlying_amounts[underlying_coins.index(brownie.ETH_ADDRESS)] if brownie.ETH_ADDRESS in underlying_coins else 0
     deposit_contract = Contract(deposit_address)
 
@@ -109,13 +112,18 @@ def test_underlying(
     lp_balance_no_dust = lp_balance - deposit_contract_lp_balance
     if True in use_lending:
         assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-5
-    elif chain.id == 100 or chain.id == 250:  # xDai or Fantom
+    elif chain.id == 100 or chain.id == 137 or chain.id == 250:  # xDai or Polygon or Fantom
         assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-6
     else:
         assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-8
 
     # Withdraw
     withdraw_amounts = list(map(lambda x: int(x / 1.02), underlying_amounts))
+    if base_pool_data["id"] == "aave":  # too unbalanced withdraw breaks aave zap
+        withdraw_amounts_float = [x / 10**d for x, d in zip(withdraw_amounts, underlying_decimals)]
+        min_amount = min(withdraw_amounts_float)
+        withdraw_amounts = [int(min(x, min_amount * 5) * 10**d) for x, d in zip(withdraw_amounts_float, underlying_decimals)]
+        withdraw_amounts += [0] * (max_coins - len(withdraw_amounts))
     if is_meta:
         base_pool_address = base_pool_data.get("swap_address")
         base_pool_token = base_pool_data.get("lp_token_address")
