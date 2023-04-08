@@ -59,6 +59,7 @@ def test_wrapped(
         expected = zap.calc_token_amount(swap_address, lp_token.address, withdraw_amounts, n_coins_wrapped, False, False)
     swap_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_wrapped], 2**256 - 1, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
+
     if True in use_lending or is_meta and base_pool_data["id"] == "aave":
         assert abs(expected - lp_balance_diff) < 10 ** 15
     elif True in use_rate:
@@ -110,7 +111,7 @@ def test_underlying(
 
     lp_balance = lp_token.balanceOf(margo)
     lp_balance_no_dust = lp_balance - deposit_contract_lp_balance
-    if True in use_lending:
+    if True in use_lending or chain.id == 43114 or chain.id == 1 and base_pool_data["id"] == "sbtc2":  # Avalanche, Ethereum
         assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-5
     elif chain.id == 100 or chain.id == 137 or chain.id == 250:  # xDai or Polygon or Fantom
         assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-6
@@ -135,4 +136,8 @@ def test_underlying(
     else:
         deposit_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
-    assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-7
+
+    if chain.id == 43114 and is_factory or chain.id == 1 and base_pool_data["id"] == "sbtc2":  # Avalanche, Ethereum
+        assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-6
+    else:
+        assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-7

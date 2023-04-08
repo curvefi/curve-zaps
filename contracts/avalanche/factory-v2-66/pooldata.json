@@ -1,0 +1,25 @@
+{
+    "base_pool": "aave",
+    "pool_types": ["meta", "factory"],
+    "swap_address": "0x6bf6fc7eaf84174bb7e1610efd865f0ebd2aa96d",
+    "lp_token_address": "0x6bf6fc7eaf84174bb7e1610efd865f0ebd2aa96d",
+    "zap_address": "0x001E3BA199B4FF4B5B6e97aCD96daFC0E2e4156e",
+    "gauge_addresses": ["0x0000000000000000000000000000000000000000"],
+    "lp_contract": "CurveTokenV2",
+    "coins": [
+        {
+            "name": "NXUSD",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0xf14f4ce569cb3679e99d5059909e23b07bd2f387",
+            "underlying_interface": "renERC20"
+        },
+        {
+            "name": "av3CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "wrapped_address": "0x1337bedc9d22ecbe766df105c9623922a27963ec",
+            "wrapped_interface": "CurveLpTokenV5"
+        }
+    ]
+}

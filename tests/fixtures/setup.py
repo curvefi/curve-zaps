@@ -23,9 +23,10 @@ def mint_margo(margo, lp_token, swap_address, underlying_coins, wrapped_coins, w
             weth = accounts.at(weth[network], True)
             weth.transfer(margo, amount)
             continue
-        if coin.address == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb":  # ankrETH
-            coin.transfer(margo, amount, {"from": "0x13e252Df0caFe34116cEc052177b7540aFc75F76"})  # steal
-            continue
+        if network == "ethereum":
+            if coin.address.lower() == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb".lower():  # ankrETH
+                coin.transfer(margo, amount, {"from": "0x13e252Df0caFe34116cEc052177b7540aFc75F76"})  # steal
+                continue
         coin._mint_for_testing(margo, amount, {"from": margo})
 
     # --- WRAPPED ---
@@ -52,9 +53,10 @@ def mint_margo(margo, lp_token, swap_address, underlying_coins, wrapped_coins, w
             weth = accounts.at(weth[network], True)
             weth.transfer(margo, amount)
             continue
-        if coin.address == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb":  # ankrETH
-            coin.transfer(margo, amount, {"from": "0x13e252Df0caFe34116cEc052177b7540aFc75F76"})  # steal
-            continue
+        if network == "ethereum":
+            if coin.address.lower() == "0xE95A203B1a91a908F9B9CE46459d101078c2c3cb".lower():  # ankrETH
+                coin.transfer(margo, amount, {"from": "0x13e252Df0caFe34116cEc052177b7540aFc75F76"})  # steal
+                continue
         coin._mint_for_testing(margo, amount, {"from": margo})
 
 
