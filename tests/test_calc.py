@@ -71,6 +71,7 @@ def test_wrapped(
 @given(underlying_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**5 * 10**18))
 @settings(deadline=timedelta(seconds=1000))
 def test_underlying(
+        pool_data,
         zap,
         swap_address,
         deposit_address,
@@ -87,8 +88,11 @@ def test_underlying(
         use_lending,
         max_coins,
 ):
-    if not is_meta and not (True in use_lending and deposit_address != swap_address):  # meta + ib,usdt,compound,y,busd,pax
+    if not is_meta and not (True in use_lending):  # meta + aave,saave,ib,usdt,compound,y,busd,pax
         return
+
+    if not is_meta:
+        base_pool_data = {"id": ""}
 
     underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)] + [0] * (max_coins - n_coins_underlying)
     underlying_amounts = [min(x, y) for x, y in zip(underlying_amounts, underlying_amounts_to_mint)] + [0] * (max_coins - n_coins_underlying)
@@ -106,6 +110,8 @@ def test_underlying(
         expected = zap.calc_token_amount(swap_address, lp_token.address, underlying_amounts, n_coins_underlying, True, True)
     if is_factory:
         deposit_contract.add_liquidity(swap_address, underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
+    elif pool_data["id"] in ["aave", "saave", "ib"]:
+        deposit_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, True, {"from": margo, "value": value})
     else:
         deposit_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
 
@@ -133,6 +139,8 @@ def test_underlying(
         expected = zap.calc_token_amount(swap_address, lp_token.address, withdraw_amounts, n_coins_underlying, False, True)
     if is_factory:
         deposit_contract.remove_liquidity_imbalance(swap_address, withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
+    elif pool_data["id"] in ["aave", "saave", "ib"]:
+        deposit_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, True, {"from": margo})
     else:
         deposit_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
