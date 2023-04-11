@@ -1,6 +1,6 @@
 # @version 0.3.7
 
-# A "zap" to calc_token amount precisely fo Compound pool
+# A "zap" for stable pools to calc_token_amount taking fees into account
 # (c) Curve.Fi, 2023
 
 from vyper.interfaces import ERC20
