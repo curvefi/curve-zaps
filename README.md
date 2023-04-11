@@ -1,6 +1,17 @@
 # Curve Zaps
 
 - CalcTokenAmountZap
+  - Ethereum: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://etherscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Optimism: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://optimistic.etherscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Gnosis (xDai): [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://gnosisscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Polygon: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://polygonscan.com/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Fantom: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://ftmscan.com/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Moonbeam: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://moonscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Kava: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://explorer.kava.io/address/0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7/contracts)
+  - Arbitrum: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://arbiscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Celo: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://celoscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Avalanche: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://snowtrace.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
+  - Aurora: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://explorer.aurora.dev/address/0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7/contracts)
 
 ## Testing and Development
 
