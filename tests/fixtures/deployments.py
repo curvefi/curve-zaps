@@ -1,5 +1,7 @@
 import pytest
 import brownie
+
+
 INIT_DATA = {
     "ethereum": {
         "use_int128": [
@@ -121,6 +123,18 @@ INIT_DATA = {
             [True, True, True, False, False],     # ib
         ],
     },
+    "moonbeam": {
+        "use_int128": [],
+        "pool_type_addresses": [],
+        "pool_types": [],
+        "use_rate": [],
+    },
+    "kava": {
+        "use_int128": [],
+        "pool_type_addresses": [],
+        "pool_types": [],
+        "use_rate": [],
+    },
     "arbitrum": {
         "use_int128": [],
         "pool_type_addresses": [
@@ -132,6 +146,12 @@ INIT_DATA = {
         "use_rate": [
             [False, True, False, False, False],   # wstETH
         ],
+    },
+    "celo": {
+        "use_int128": [],
+        "pool_type_addresses": [],
+        "pool_types": [],
+        "use_rate": [],
     },
     "avalanche": {
         "use_int128": [],
@@ -147,6 +167,12 @@ INIT_DATA = {
             [False, False, False, False, False],   # aave
             [False, False, False, False, False],   # aaveV3
         ],
+    },
+    "aurora": {
+        "use_int128": [],
+        "pool_type_addresses": [],
+        "pool_types": [],
+        "use_rate": [],
     },
 }
 
