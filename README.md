@@ -54,8 +54,8 @@ brownie test --pools 3pool,compound,aave --network mainnet-fork
 **mainnet (ethereum)**
 ```bash
 PLAIN: 3pool,hbtc,link,sbtc2,seth,steth,susd,eurs,eurt,fraxusdc + aeth,reth (they use rate)
-LENDING: aave,saave,ib,usdt,compound,y,busd,pax
-META: gusd,husd,usdk,musd,rsv,dusd,usdp + rai (uses rate)
+LENDING: aave,saave,ib,usdt,compound
+META: gusd,usdk,musd,rsv,dusd,usdp + rai (uses rate)
 FACTORY PLAIN: factory-v2-283,factory-v2-66,factory-v2-235
 FACTORY META: tusd + factory-v2-9,factory-v2-144,factory-v2-247
 ```
