@@ -1,6 +1,6 @@
 # Curve Zaps
 
-- CalcTokenAmountZap
+- StableCalcZap (precise calc_token_amount + get_dx)
   - Ethereum: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://etherscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
   - Optimism: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://optimistic.etherscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
   - Gnosis (xDai): [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://gnosisscan.io/address/0x5552b631e2ad801faa129aacf4b701071cc9d1f7#code)
