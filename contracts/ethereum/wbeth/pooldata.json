@@ -1,0 +1,24 @@
+{
+  "lp_contract": "CurveTokenV3",
+  "pool_types": ["eth", "crate"],
+  "wrapped_contract": "rETH",
+  "swap_address": "0xBfAb6FA95E0091ed66058ad493189D2cB29385E6",
+  "lp_token_address": "0xBfAb6FA95E0091ed66058ad493189D2cB29385E6",
+  "gauge_addresses": ["0x50161102a240b1456d770Dbb55c76d8dc2D160Aa"],
+  "coins": [
+    {
+      "name": "ETH",
+      "decimals": 18,
+      "tethered": false,
+      "underlying_address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    },
+    {
+      "name": "wBETH",
+      "decimals": 18,
+      "wrapped_decimals": 18,
+      "tethered": false,
+      "wrapped_address": "0xa2E3356610840701BDf5611a53974510Ae27E2e1",
+      "use_rate": true
+    }
+  ]
+}

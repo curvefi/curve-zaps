@@ -31,6 +31,8 @@ INIT_DATA = {
             "0xA96A65c051bF88B4095Ee1f2451C2A9d43F53Ae2",  # aETH
 
             "0xF9440930043eb3997fc70e1339dBb11F341de7A8",  # rETH
+
+            "0xBfAb6FA95E0091ed66058ad493189D2cB29385E6",  # wBETH
         ],
         "pool_types": [
             2,  # rai
@@ -49,6 +51,8 @@ INIT_DATA = {
             7,  # aETH
 
             8,  # rETH
+
+            10,  # wBETH
         ],
         "use_rate": [
             [True, False, False, False, False],   # rai
@@ -67,6 +71,8 @@ INIT_DATA = {
             [False, True, False, False, False],   # aETH
 
             [False, True, False, False, False],   # rETH
+
+            [False, True, False, False, False],   # wBETH
         ],
     },
     "optimism": {

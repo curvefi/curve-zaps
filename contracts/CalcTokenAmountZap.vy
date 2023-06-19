@@ -22,6 +22,9 @@ interface Int128Pool:
 interface wstETHPool:
     def oracle() -> address: view
 
+interface wBETHPool:
+    def stored_rates() -> uint256[2]: view
+
 interface RaiPool:
     def redemption_price_snap() -> address: view
 
@@ -220,6 +223,18 @@ def _rates_wsteth(pool: address, coins: address[MAX_COINS], n_coins: uint256, us
 
     return result
 
+@view
+@internal
+def _rates_wbeth(pool: address, n_coins: uint256) -> uint256[MAX_COINS]:
+    _stored_rates: uint256[2] = wBETHPool(pool).stored_rates()
+    result: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
+    for i in range(MAX_COINS):
+        if i >= n_coins:
+            break
+        result[i] = _stored_rates[i]
+
+    return result
+
 
 @internal
 @view
@@ -244,6 +259,8 @@ def _rates(pool: address, pool_type: uint8, coins: address[MAX_COINS], n_coins: 
         return self._rates_reth(coins, n_coins, use_rate)
     elif pool_type == 9:
         return self._rates_wsteth(pool, coins, n_coins, use_rate)
+    elif pool_type == 10:
+        return self._rates_wbeth(pool, n_coins)
     else:
         raise "Bad pool type"
 
