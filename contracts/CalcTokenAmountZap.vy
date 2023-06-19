@@ -413,6 +413,7 @@ def _calc_token_amount(
     @param use_rate Use rate or not for each pool's coin
     @param base_pool Base pool address (for meta)
     @param deposit True - add_liquidity, False - remove_liquidity_imbalance
+    @param use_underlying Use underlying or wrapped coins
     @return Expected LP token amount to mint/burn
     """
     coins: address[MAX_COINS] = empty(address[MAX_COINS])
@@ -494,6 +495,7 @@ def calc_token_amount(
     @param amounts Coin amounts to add/remove
     @param n_coins Number of coins in the pool
     @param deposit True - add_liquidity, False - remove_liquidity_imbalance
+    @param use_underlying Use underlying or wrapped coins
     @return Expected LP token amount to mint/burn
     """
     return self._calc_token_amount(pool, token, amounts, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], empty(address), deposit, use_underlying)
@@ -521,6 +523,7 @@ def calc_token_amount_meta(
     @param base_pool Base pool address
     @param base_token Base pool's LP token address
     @param deposit True - add_liquidity, False - remove_liquidity_imbalance
+    @param use_underlying Use underlying or wrapped coins
     @return Expected LP token amount to mint/burn
     """
     if not use_underlying:
@@ -556,6 +559,17 @@ def _get_dx(
         base_pool: address,
         use_underlying: bool = False,  # Only for ib,usdt,compound,y,busd,pax
     ) -> uint256:
+    """
+    @notice Calculate the input amount required to receive the desired output amount.
+    @param pool Pool address
+    @param i Input coin index
+    @param j Output coin index
+    @param dy Desired amount of token going out
+    @param n_coins Number of coins in the pool
+    @param base_pool Base pool address (for meta)
+    @param use_underlying Use underlying or wrapped coins
+    @return Required input amount
+    """
     coins: address[MAX_COINS] = empty(address[MAX_COINS])
     balances: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
     for k in range(MAX_COINS_INT128):
@@ -598,9 +612,9 @@ def get_dx(pool: address, i: int128, j: int128, dy: uint256, n_coins: uint256) -
     """
     @notice Calculate the input amount required to receive the desired output amount. For NON-META pools.
     @param pool Pool address
-    @param dy Desired amount of token going out
     @param i Input coin index
     @param j Output coin index
+    @param dy Desired amount of token going out
     @param n_coins Number of coins in the pool
     @return Required input amount
     """
@@ -614,9 +628,9 @@ def get_dx_underlying(pool: address, i: int128, j: int128, dy: uint256, n_coins:
     @notice Calculate the underlying input amount required to receive the desired underlying output amount.
             Only for ib,usdt,compound,y,busd,pax. For NON-META pools.
     @param pool Pool address
-    @param dy Desired amount of token going out
     @param i Input coin index
     @param j Output coin index
+    @param dy Desired amount of token going out
     @param n_coins Number of coins in the pool
     @return Required input amount
     """
@@ -629,11 +643,11 @@ def _get_dx_meta(pool: address, i: int128, j: int128, dy: uint256, n_coins: uint
     """
     @notice Calculate the input amount required to receive the desired output amount. For META pools.
     @param pool Pool address
-    @param dy Desired amount of token going out
     @param i Input coin index
     @param j Output coin index
+    @param dy Desired amount of token going out
     @param n_coins Number of coins in the pool
-    @param base_pool Base pool address (for meta)
+    @param base_pool Base pool address
     @return Required input amount
     """
     if self.POOL_TYPE[pool] == 0:
@@ -648,11 +662,11 @@ def get_dx_meta(pool: address, i: int128, j: int128, dy: uint256, n_coins: uint2
     """
     @notice Calculate the input amount required to receive the desired output amount. For META pools.
     @param pool Pool address
-    @param dy Desired amount of token going out
     @param i Input coin index
     @param j Output coin index
+    @param dy Desired amount of token going out
     @param n_coins Number of coins in the pool
-    @param base_pool Base pool address (for meta)
+    @param base_pool Base pool address
     @return Required input amount
     """
     return self._get_dx_meta(pool, i, j, dy, n_coins, base_pool)
@@ -664,11 +678,11 @@ def get_dx_meta_underlying(pool: address, i: int128, j: int128, dy: uint256, n_c
     """
     @notice Calculate the input amount required to receive the desired output amount. For META pools.
     @param pool Pool address
-    @param dy Desired amount of token going out
     @param i Input coin index
     @param j Output coin index
+    @param dy Desired amount of token going out
     @param n_coins Number of coins in the pool
-    @param base_pool Base pool address (for meta)
+    @param base_pool Base pool address
     @param base_token Base pool's LP token address
     @return Required input amount
     """
