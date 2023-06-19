@@ -1,4 +1,5 @@
 import pytest
+from brownie import Contract
 
 
 @pytest.fixture(scope="module")
@@ -32,18 +33,14 @@ def wrapped_decimals(pool_data):
 def wrapped_amounts_to_mint(pool_data, wrapped_decimals, network):
     amt = 10 ** 6
     if network == "ethereum":
+        if pool_data["id"] in ["factory-v2-247"]:
+            amt = 10
+        if pool_data["id"] in ["hbtc", "sbtc2", "aeth"]:
+            amt = 10 ** 2
+        if pool_data["id"] in ["pax", "seth", "reth", "link"]:
+            amt = 10 ** 3
         if pool_data["id"] in ["busd", "dusd", "ib"]:
             amt = 10 ** 5
-        if pool_data["id"] == "pax":
-            amt = 10 ** 3
-        if pool_data["id"] in ["sbtc", "ren"]:
-            amt = 10 ** 2
-        if pool_data["id"] == "aeth":
-            amt = 10 ** 2
-        if "btc" in pool_data["id"] or pool_data["id"] == "factory-v2-247":
-            amt = 10
-        if pool_data["id"] == "factory-v2-235":  # Just because it's a very small pool
-            amt = 50
     if network == "optimism":
         if pool_data["id"] == "wsteth":
             amt = 10 ** 4
@@ -57,24 +54,30 @@ def wrapped_amounts_to_mint(pool_data, wrapped_decimals, network):
         if pool_data["id"] == "aaveV3":  # Just because it's a very small pool
             amt = 100
 
-    return [amt * 10 ** d for d in wrapped_decimals]
+    swap_contract = Contract(pool_data['swap_address'])
+    amounts = []
+    for i in range(len(wrapped_decimals)):
+        amounts.append(min(amt * 10 ** wrapped_decimals[i], int(swap_contract.balances(i) / 2)))
+
+    return amounts
 
 
 @pytest.fixture(scope="module")
-def underlying_amounts_to_mint(pool_data, underlying_decimals, network):
+def underlying_amounts_to_mint(pool_data, underlying_decimals, network, wrapped_amounts_to_mint):
     amt = 10 ** 6
     if network == "ethereum":
-        if pool_data["id"] == "aeth":
-            amt = 10 ** 2
+        if pool_data["id"] in ["pax"]:
+            amt = 10 ** 3
         if pool_data["id"] == "factory-v2-247":
             amt = 10
-    if network == "arbitrum":
-        if pool_data["id"] == "wsteth":
-            amt = 10 ** 5
     if network == "avalanche":
         if pool_data["id"] == "aaveV3":  # Just because it's a very small pool
             amt = 100
-    return [amt * 10 ** d for d in underlying_decimals]
+
+    result = [amt * 10 ** d for d in underlying_decimals]
+    if is_meta:
+        result[0] = wrapped_amounts_to_mint[0]
+    return result
 
 
 @pytest.fixture(scope="module")
