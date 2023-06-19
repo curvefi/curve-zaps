@@ -74,6 +74,8 @@ INIT_DATA = {
 
             [False, True, False, False, False],   # wBETH
         ],
+        "factory": "0xb9fc157394af804a3578134a6585c0dc9cc990d4",
+        "eth_implementation": "0x847ee1227A9900B73aEeb3a47fAc92c52FD54ed9",
     },
     "optimism": {
         "use_int128": [],
@@ -86,6 +88,8 @@ INIT_DATA = {
         "use_rate": [
             [False, True, False, False, False],   # wstETH
         ],
+        "factory": "0x2db0E83599a91b508Ac268a6197b8B14F5e72840",
+        "eth_implementation": "0x6F9fb833501f46CBE6f6A4b6Cf32C834E5A5e8C5",
     },
     "xdai": {
         "use_int128": [],
@@ -98,6 +102,8 @@ INIT_DATA = {
         "use_rate": [
             [True, False, False, False, False],   # rai
         ],
+        "factory": "0x0000000000000000000000000000000000000000",
+        "eth_implementation": "0x0000000000000000000000000000000000000000",
     },
     "polygon": {
         "use_int128": [],
@@ -110,6 +116,8 @@ INIT_DATA = {
         "use_rate": [
             [False, False, False, False, False],   # aave
         ],
+        "factory": "0x0000000000000000000000000000000000000000",
+        "eth_implementation": "0x0000000000000000000000000000000000000000",
     },
     "fantom": {
         "use_int128": [],
@@ -128,18 +136,24 @@ INIT_DATA = {
 
             [True, True, True, False, False],     # ib
         ],
+        "factory": "0x0000000000000000000000000000000000000000",
+        "eth_implementation": "0x0000000000000000000000000000000000000000",
     },
     "moonbeam": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
+        "factory": "0x0000000000000000000000000000000000000000",
+        "eth_implementation": "0x0000000000000000000000000000000000000000",
     },
     "kava": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
+        "factory": "0x0000000000000000000000000000000000000000",
+        "eth_implementation": "0x0000000000000000000000000000000000000000",
     },
     "arbitrum": {
         "use_int128": [],
@@ -152,12 +166,16 @@ INIT_DATA = {
         "use_rate": [
             [False, True, False, False, False],   # wstETH
         ],
+        "factory": "0xb17b674D9c5CB2e441F8e196a2f048A81355d031",
+        "eth_implementation": "0x6F9fb833501f46CBE6f6A4b6Cf32C834E5A5e8C5",
     },
     "celo": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
+        "factory": "0x0000000000000000000000000000000000000000",
+        "eth_implementation": "0x0000000000000000000000000000000000000000",
     },
     "avalanche": {
         "use_int128": [],
@@ -173,12 +191,16 @@ INIT_DATA = {
             [False, False, False, False, False],   # aave
             [False, False, False, False, False],   # aaveV3
         ],
+        "factory": "0x0000000000000000000000000000000000000000",
+        "eth_implementation": "0x0000000000000000000000000000000000000000",
     },
     "aurora": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
+        "factory": "0x0000000000000000000000000000000000000000",
+        "eth_implementation": "0x0000000000000000000000000000000000000000",
     },
 }
 
@@ -189,10 +211,12 @@ def zap(CalcTokenAmountZap, alice, network, max_coins):
     pool_type_addresses = INIT_DATA[network]["pool_type_addresses"]
     pool_types = INIT_DATA[network]["pool_types"]
     use_rate = INIT_DATA[network]["use_rate"]
+    factory = INIT_DATA[network]["factory"]
+    eth_implementation = INIT_DATA[network]["eth_implementation"]
 
     use_int128 += [brownie.ZERO_ADDRESS] * (20 - len(use_int128))
     pool_type_addresses += [brownie.ZERO_ADDRESS] * (20 - len(pool_type_addresses))
     pool_types += [0] * (20 - len(pool_types))
     use_rate += [[False] * max_coins] * (20 - len(use_rate))
 
-    return CalcTokenAmountZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, {'from': alice})
+    return CalcTokenAmountZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation, {'from': alice})

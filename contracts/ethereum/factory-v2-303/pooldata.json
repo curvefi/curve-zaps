@@ -1,0 +1,20 @@
+{
+    "lp_contract": "CurveTokenV2",
+    "swap_address": "0x21e27a5e5513d6e65c4f830167390997aa84843a",
+    "lp_token_address": "0x21e27a5e5513d6e65c4f830167390997aa84843a",
+    "gauge_addresses": ["0x79f21bc30632cd40d2af8134b469a0eb4c9574aa"],
+    "coins": [
+        {
+          "name": "ETH",
+          "decimals": 18,
+          "tethered": false,
+          "underlying_address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+        },
+        {
+            "name": "stETH",
+            "decimals": 18,
+            "tethered": false,
+            "underlying_address": "0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84"
+        }
+    ]
+}

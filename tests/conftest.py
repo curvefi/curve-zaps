@@ -10,10 +10,14 @@ PLAIN_POOLS = ['3pool', 'aeth', 'hbtc', 'link', 'reth', 'sbtc2', 'seth', 'steth'
 LENDING_POOLS = ['aave', 'saave'] + ['ib', 'usdt', 'compound'] + ['y', 'busd', 'pax']
 # gusd,husd,usdk,musd,rsv,dusd,usdp + rai
 META_POOLS = ['gusd', 'husd', 'usdk', 'musd', 'rsv', 'dusd', 'usdp'] + ['rai']
-# factory-v2-283,factory-v2-66,factory-v2-235
-FACTORY_PLAIN_POOLS = ['factory-v2-283', 'factory-v2-66', 'factory-v2-235']  # cvxCrv/Crv (2 coins), 3EURpool (3 coins), CRV booster (4 coins)
+
+# factory-v2-283,factory-v2-66,factory-v2-235 + factory-v2-303
+FACTORY_PLAIN_POOLS = ['factory-v2-283', 'factory-v2-66', 'factory-v2-235'] + ['factory-v2-303']
+# cvxCrv/Crv (2 coins), 3EURpool (3 coins), CRV booster (4 coins) + stETH-ng (pool_type 10)
+
 # tusd + factory-v2-9,factory-v2-144,factory-v2-247
-FACTORY_META_POOLS = ['tusd'] + ['factory-v2-9', 'factory-v2-144', 'factory-v2-247']  # OUSD/3Crv, TUSD/FRAXBP, tBTC/sbtc2Crv
+FACTORY_META_POOLS = ['tusd'] + ['factory-v2-9', 'factory-v2-144', 'factory-v2-247']
+# OUSD/3Crv, TUSD/FRAXBP, tBTC/sbtc2Crv
 
 pytest_plugins = [
     "fixtures.accounts",
