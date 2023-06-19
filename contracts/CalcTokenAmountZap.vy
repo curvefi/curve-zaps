@@ -52,6 +52,9 @@ interface aETH:
 interface rETH:
     def getExchangeRate() -> uint256: view
 
+interface Factory:
+    def get_implementation_address(_pool: address) -> address: view
+
 
 MAX_COINS: constant(uint256) = 5
 MAX_COINS_INT128: constant(int128) = 5
@@ -62,8 +65,11 @@ FEE_DENOMINATOR: constant(uint256) = 10 ** 10
 USE_INT128: HashMap[address, bool]
 POOL_TYPE: HashMap[address, uint8]
 USE_RATE: HashMap[address, bool[MAX_COINS]]
+FACTORY: address
+ETH_IMPLEMENTATION: address
 
 admin: public(address)
+
 
 @external
 def __init__(
@@ -71,10 +77,17 @@ def __init__(
         _pool_type_addresses: address[20],
         _pool_types: uint8[20],
         _use_rate: bool[MAX_COINS][20],
+        _factory: address,
+        _eth_implementation: address,
     ):
     """
     @notice CalcTokenAmountZap constructor
     @param _use_int128 Addresses of pools which take indexes as int128 in coins(i) and balances(i) methods
+    @param _pool_type_addresses Addresses of pools which use rates
+    @param _pool_types Types of pools using rates (from 2 to 10)
+    @param _use_rate Lists of bools where True means that for the coin we use rate
+    @param _factory Address of the stable factory
+    @param _eth_implementation Implementation address for ETH pools with oracle
     """
     self.admin = msg.sender
 
@@ -88,6 +101,10 @@ def __init__(
             break
         self.POOL_TYPE[_pool_type_addresses[i]] = _pool_types[i]
         self.USE_RATE[_pool_type_addresses[i]] = _use_rate[i]
+
+    self.FACTORY = _factory
+    self.ETH_IMPLEMENTATION = _eth_implementation
+
 
 @internal
 @view
@@ -393,6 +410,7 @@ def _wrapped_amounts(pool_type: uint8, coins: address[MAX_COINS], amounts: uint2
 
     return result
 
+
 @internal
 @view
 def _underlying_precision(i: int128, pool_type: uint8, coins: address[MAX_COINS], use_rate: bool[MAX_COINS]) -> uint256:
@@ -404,6 +422,16 @@ def _underlying_precision(i: int128, pool_type: uint8, coins: address[MAX_COINS]
             underlying_coin = yERC20(coins[i]).token()
 
     return PRECISION / 10 ** cERC20(underlying_coin).decimals()
+
+
+@internal
+@view
+def _pool_type(pool: address) -> uint8:
+    if self.FACTORY != empty(address):
+        if Factory(self.FACTORY).get_implementation_address(pool) == self.ETH_IMPLEMENTATION:
+            return 10
+
+    return self.POOL_TYPE[pool]
 
 
 @internal
@@ -515,7 +543,7 @@ def calc_token_amount(
     @param use_underlying Use underlying or wrapped coins
     @return Expected LP token amount to mint/burn
     """
-    return self._calc_token_amount(pool, token, amounts, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], empty(address), deposit, use_underlying)
+    return self._calc_token_amount(pool, token, amounts, n_coins, self._pool_type(pool), self.USE_RATE[pool], empty(address), deposit, use_underlying)
 
 
 @external
@@ -544,10 +572,10 @@ def calc_token_amount_meta(
     @return Expected LP token amount to mint/burn
     """
     if not use_underlying:
-        if self.POOL_TYPE[pool] == 0:
+        if self._pool_type(pool) == 0:
             return self._calc_token_amount(pool, token, amounts, n_coins, 1, FALSE_ARRAY, base_pool, deposit)
         else:
-            return self._calc_token_amount(pool, token, amounts, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], base_pool, deposit)
+            return self._calc_token_amount(pool, token, amounts, n_coins, self._pool_type(pool), self.USE_RATE[pool], base_pool, deposit)
 
     meta_amounts: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
     base_amounts: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
@@ -557,10 +585,10 @@ def calc_token_amount_meta(
     _base_tokens: uint256 = self._calc_token_amount(base_pool, base_token, base_amounts, n_coins - 1, self.POOL_TYPE[base_pool], FALSE_ARRAY, empty(address), deposit)
     meta_amounts[1] = _base_tokens
 
-    if self.POOL_TYPE[pool] == 0:
+    if self._pool_type(pool) == 0:
         return self._calc_token_amount(pool, token, meta_amounts, 2, 1, FALSE_ARRAY, base_pool, deposit)
     else:
-        return self._calc_token_amount(pool, token, meta_amounts, 2, self.POOL_TYPE[pool], self.USE_RATE[pool], base_pool, deposit)
+        return self._calc_token_amount(pool, token, meta_amounts, 2, self._pool_type(pool), self.USE_RATE[pool], base_pool, deposit)
 
 
 @internal
@@ -635,7 +663,7 @@ def get_dx(pool: address, i: int128, j: int128, dy: uint256, n_coins: uint256) -
     @param n_coins Number of coins in the pool
     @return Required input amount
     """
-    return self._get_dx(pool, i, j, dy, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], empty(address))
+    return self._get_dx(pool, i, j, dy, n_coins, self._pool_type(pool), self.USE_RATE[pool], empty(address))
 
 
 @external
@@ -651,7 +679,7 @@ def get_dx_underlying(pool: address, i: int128, j: int128, dy: uint256, n_coins:
     @param n_coins Number of coins in the pool
     @return Required input amount
     """
-    return self._get_dx(pool, i, j, dy, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], empty(address), True)
+    return self._get_dx(pool, i, j, dy, n_coins, self._pool_type(pool), self.USE_RATE[pool], empty(address), True)
 
 
 @internal
@@ -667,10 +695,10 @@ def _get_dx_meta(pool: address, i: int128, j: int128, dy: uint256, n_coins: uint
     @param base_pool Base pool address
     @return Required input amount
     """
-    if self.POOL_TYPE[pool] == 0:
+    if self._pool_type(pool) == 0:
         return self._get_dx(pool, i, j, dy, n_coins, 1, FALSE_ARRAY, base_pool)
     else:
-        return self._get_dx(pool, i, j, dy, n_coins, self.POOL_TYPE[pool], self.USE_RATE[pool], base_pool)
+        return self._get_dx(pool, i, j, dy, n_coins, self._pool_type(pool), self.USE_RATE[pool], base_pool)
 
 
 @external
