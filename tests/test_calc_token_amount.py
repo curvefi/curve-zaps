@@ -1,11 +1,19 @@
-import brownie
 import pytest
-from brownie import Contract, chain
+from brownie import Contract, chain, ETH_ADDRESS
 from brownie.test import given, strategy
 from hypothesis import settings
 from datetime import timedelta
 
 pytestmark = pytest.mark.usefixtures("mint_margo", "approve_margo")
+
+
+def _get_balance(coin, margo) -> int:
+    return margo.balance() if coin == ETH_ADDRESS else coin.balanceOf(margo)
+
+
+def _format_amounts(coins, amounts, decimals, margo, n, max_n):
+    amounts = [int(x // 10 ** (18 - d)) for x, d in zip(amounts, decimals)]
+    return [min(a, _get_balance(c, margo)) for a, c in zip(amounts, coins)] + [0] * (max_n - n)
 
 
 @given(wrapped_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**6 * 10**18))
@@ -18,7 +26,6 @@ def test_wrapped(
         n_coins_wrapped,
         wrapped_coins,
         wrapped_amounts,
-        wrapped_amounts_to_mint,
         wrapped_decimals,
         is_meta,
         is_factory,
@@ -27,9 +34,8 @@ def test_wrapped(
         use_rate,
         max_coins,
 ):
-    wrapped_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(wrapped_amounts, wrapped_decimals)]
-    wrapped_amounts = [min(x, y) for x, y in zip(wrapped_amounts, wrapped_amounts_to_mint)] + [0] * (max_coins - n_coins_wrapped)
-    value = wrapped_amounts[wrapped_coins.index(brownie.ETH_ADDRESS)] if brownie.ETH_ADDRESS in wrapped_coins else 0
+    wrapped_amounts = _format_amounts(wrapped_coins, wrapped_amounts, wrapped_decimals, margo, n_coins_wrapped, max_coins)
+    value = wrapped_amounts[wrapped_coins.index(ETH_ADDRESS)] if ETH_ADDRESS in wrapped_coins else 0
     swap_contract = Contract(swap_address)
 
     # Deposit
@@ -80,7 +86,6 @@ def test_underlying(
         n_coins_underlying,
         underlying_coins,
         underlying_amounts,
-        underlying_amounts_to_mint,
         underlying_decimals,
         base_pool_data,
         is_meta,
@@ -94,9 +99,8 @@ def test_underlying(
     if not is_meta:
         base_pool_data = {"id": ""}
 
-    underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)] + [0] * (max_coins - n_coins_underlying)
-    underlying_amounts = [min(x, y) for x, y in zip(underlying_amounts, underlying_amounts_to_mint)] + [0] * (max_coins - n_coins_underlying)
-    value = underlying_amounts[underlying_coins.index(brownie.ETH_ADDRESS)] if brownie.ETH_ADDRESS in underlying_coins else 0
+    underlying_amounts = _format_amounts(underlying_coins, underlying_amounts, underlying_decimals, margo, n_coins_underlying, max_coins)
+    value = underlying_amounts[underlying_coins.index(ETH_ADDRESS)] if ETH_ADDRESS in underlying_coins else 0
     deposit_contract = Contract(deposit_address)
 
     deposit_contract_lp_balance = lp_token.balanceOf(deposit_contract)  # zap can have some dust
@@ -116,7 +120,7 @@ def test_underlying(
         deposit_contract.add_liquidity(underlying_amounts[:n_coins_underlying], 0, {"from": margo, "value": value})
 
     lp_balance = lp_token.balanceOf(margo)
-    lp_balance_no_dust = lp_balance - deposit_contract_lp_balance
+    lp_balance_no_dust = lp_balance - deposit_contract_lp_balance if deposit_address != swap_address else lp_balance
     if True in use_lending or chain.id == 43114 or chain.id == 1 and base_pool_data["id"] == "sbtc2":  # Avalanche, Ethereum
         assert abs(expected - lp_balance_no_dust) / lp_balance_no_dust < 1e-5
     elif chain.id == 100 or chain.id == 137 or chain.id == 250:  # xDai or Polygon or Fantom

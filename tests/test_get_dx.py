@@ -76,6 +76,8 @@ def test_underlying(
 
 
             desired = underlying_amounts[j]
+            if pool_data["id"] in ["ib"]:
+                desired = min(desired, 10**3 * 10**underlying_decimals[j])
             if pool_data["id"] in ["usdt"]:
                 desired = min(desired, 10**4 * 10**underlying_decimals[j])
             if is_meta:
