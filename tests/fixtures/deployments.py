@@ -206,7 +206,7 @@ INIT_DATA = {
 
 
 @pytest.fixture(scope="module")
-def zap(CalcTokenAmountZap, alice, network, max_coins):
+def zap(StableCalcZap, alice, network, max_coins):
     use_int128 = INIT_DATA[network]["use_int128"]
     pool_type_addresses = INIT_DATA[network]["pool_type_addresses"]
     pool_types = INIT_DATA[network]["pool_types"]
@@ -219,4 +219,4 @@ def zap(CalcTokenAmountZap, alice, network, max_coins):
     pool_types += [0] * (20 - len(pool_types))
     use_rate += [[False] * max_coins] * (20 - len(use_rate))
 
-    return CalcTokenAmountZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation, {'from': alice})
+    return StableCalcZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation, {'from': alice})

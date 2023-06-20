@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from brownie import network
-from brownie import CalcTokenAmountZap, accounts, ZERO_ADDRESS
+from brownie import StableCalcZap, accounts, ZERO_ADDRESS
 from eth_abi import encode
 
 
@@ -241,4 +241,4 @@ def main():
     )
 
     txparams.update({'from': accounts[0]})
-    return CalcTokenAmountZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation, txparams)
+    return StableCalcZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation, txparams)

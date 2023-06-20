@@ -10,7 +10,6 @@ interface Pool:
     def fee() -> uint256: view
     def coins(i: uint256) -> address: view
     def balances(i: uint256) -> uint256: view
-    def admin_fee() -> uint256: view
     def get_virtual_price() -> uint256: view
     def offpeg_fee_multiplier() -> uint256: view
     def calc_withdraw_one_coin(_token_amount: uint256, i: int128) -> uint256: view
@@ -68,8 +67,6 @@ USE_RATE: HashMap[address, bool[MAX_COINS]]
 FACTORY: address
 ETH_IMPLEMENTATION: address
 
-admin: public(address)
-
 
 @external
 def __init__(
@@ -89,8 +86,6 @@ def __init__(
     @param _factory Address of the stable factory
     @param _eth_implementation Implementation address for ETH pools with oracle
     """
-    self.admin = msg.sender
-
     for addr in _use_int128:
         if addr == empty(address):
             break
@@ -748,32 +743,3 @@ def get_dx_meta_underlying(pool: address, i: int128, j: int128, dy: uint256, n_c
         # 2. dx = calc_withdraw_one_coin(lp_amount, i - 1)
         lp_amount: uint256 = self._get_dx_meta(pool, 1, 0, dy, 2, base_pool)
         return Pool(base_pool).calc_withdraw_one_coin(lp_amount, i - 1)
-
-
-@external
-def set_int128(_use_int128: address[20]):
-    """
-    @notice Set pools which use int128 for arg in coins and balances methods (admin only)
-    @param _use_int128 Addresses of pools
-    """
-    assert msg.sender == self.admin, "admin only"
-    for addr in _use_int128:
-        if addr == empty(address):
-            break
-        self.USE_INT128[addr] = True
-
-
-@external
-def set_pool_type(_pool_type_addresses: address[20], _pool_types: uint8[20], _use_rate: bool[MAX_COINS][20]):
-    """
-    @notice Set pools that use rates or dynamic fee (admin only)
-    @param _pool_type_addresses Addresses of pools
-    @param _pool_types Types of pools
-    @param _use_rate Use rate or not for each pool's coin
-    """
-    assert msg.sender == self.admin, "admin only"
-    for i in range(20):
-        if _pool_type_addresses[i] == empty(address):
-            break
-        self.POOL_TYPE[_pool_type_addresses[i]] = _pool_types[i]
-        self.USE_RATE[_pool_type_addresses[i]] = _use_rate[i]
