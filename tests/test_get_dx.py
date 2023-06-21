@@ -19,7 +19,6 @@ def test_wrapped(
         base_pool_data,
         use_lending,
         use_rate,
-        max_coins,
 ):
     _wrapped_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(wrapped_amounts, wrapped_decimals)]
     swap_contract = Contract(swap_address)
@@ -61,12 +60,11 @@ def test_underlying(
         is_meta,
         is_factory,
         use_lending,
-        max_coins,
 ):
     if not is_meta and not (True in use_lending):  # meta + aave,saave,ib,usdt,compound,y,busd,pax
         return
 
-    underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)] + [0] * (max_coins - n_coins_underlying)
+    underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)]
     swap_contract = Contract(swap_address)
 
     for i in range(n_coins_underlying):
