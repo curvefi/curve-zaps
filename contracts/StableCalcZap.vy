@@ -1,6 +1,6 @@
 # @version 0.3.7
 
-# A "zap" for stable pools to calc_token_amount taking fees into account
+# A "zap" for stable pools to calc_token_amount taking fees into account and to get_dx
 # (c) Curve.Fi, 2023
 
 from vyper.interfaces import ERC20

@@ -224,8 +224,8 @@ def main():
     pool_type_addresses = INIT_DATA[network_name]["pool_type_addresses"]
     pool_types = INIT_DATA[network_name]["pool_types"]
     use_rate = INIT_DATA[network_name]["use_rate"]
-    factory = INIT_DATA[network]["factory"]
-    eth_implementation = INIT_DATA[network]["eth_implementation"]
+    factory = INIT_DATA[network_name]["factory"]
+    eth_implementation = INIT_DATA[network_name]["eth_implementation"]
 
     use_int128 += [ZERO_ADDRESS] * (20 - len(use_int128))
     pool_type_addresses += [ZERO_ADDRESS] * (20 - len(pool_type_addresses))
