@@ -209,7 +209,7 @@ INIT_DATA = {
 
 
 def main():
-    max_coins = 5
+    max_coins = 10
     txparams = {}
     network_name = network.show_active()
     if network_name == 'mainnet':
@@ -230,6 +230,7 @@ def main():
     use_int128 += [ZERO_ADDRESS] * (20 - len(use_int128))
     pool_type_addresses += [ZERO_ADDRESS] * (20 - len(pool_type_addresses))
     pool_types += [0] * (20 - len(pool_types))
+    use_rate = [x + [False] * (max_coins - len(x)) for x in use_rate]
     use_rate += [[False] * max_coins] * (20 - len(use_rate))
 
     print(

@@ -217,6 +217,7 @@ def zap(StableCalcZap, alice, network, max_coins):
     use_int128 += [brownie.ZERO_ADDRESS] * (20 - len(use_int128))
     pool_type_addresses += [brownie.ZERO_ADDRESS] * (20 - len(pool_type_addresses))
     pool_types += [0] * (20 - len(pool_types))
+    use_rate = [x + [False] * (max_coins - len(x)) for x in use_rate]
     use_rate += [[False] * max_coins] * (20 - len(use_rate))
 
     return StableCalcZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation, {'from': alice})

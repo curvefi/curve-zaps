@@ -55,9 +55,9 @@ interface Factory:
     def get_implementation_address(_pool: address) -> address: view
 
 
-MAX_COINS: constant(uint256) = 5
-MAX_COINS_INT128: constant(int128) = 5
-FALSE_ARRAY: constant(bool[5]) = [False, False, False, False, False]
+MAX_COINS: constant(uint256) = 10
+MAX_COINS_INT128: constant(int128) = 10
+FALSE_ARRAY: constant(bool[10]) = [False, False, False, False, False, False, False, False, False, False]
 PRECISION: constant(uint256) = 10 ** 18  # The precision to convert to
 FEE_DENOMINATOR: constant(uint256) = 10 ** 10
 

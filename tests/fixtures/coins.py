@@ -20,7 +20,7 @@ WRAPPED_COIN_METHODS = {
 
 @pytest.fixture(scope="module")
 def max_coins():
-    return 5
+    return 10
 
 
 @pytest.fixture(scope="module")
