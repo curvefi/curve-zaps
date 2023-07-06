@@ -221,3 +221,8 @@ def zap(StableCalcZap, alice, network, max_coins):
     use_rate += [[False] * max_coins] * (20 - len(use_rate))
 
     return StableCalcZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation, {'from': alice})
+
+
+@pytest.fixture(scope="module")
+def crypto_calc_zap(CryptoCalcZap, alice):
+    return CryptoCalcZap.deploy({'from': alice})

@@ -19,6 +19,8 @@ FACTORY_PLAIN_POOLS = ['factory-v2-283', 'factory-v2-66', 'factory-v2-235'] + ['
 FACTORY_META_POOLS = ['tusd'] + ['factory-v2-9', 'factory-v2-144', 'factory-v2-247']
 # OUSD/3Crv, TUSD/FRAXBP, tBTC/sbtc2Crv
 
+CRYPTO_POOLS = ["tricrypto2"]
+
 pytest_plugins = [
     "fixtures.accounts",
     "fixtures.coins",
@@ -40,7 +42,7 @@ _NETWORKS = {
 _POOLDATA = {}
 
 _POOLS = {
-    "ethereum": PLAIN_POOLS + LENDING_POOLS + META_POOLS + FACTORY_PLAIN_POOLS + FACTORY_META_POOLS,
+    "ethereum": PLAIN_POOLS + LENDING_POOLS + META_POOLS + FACTORY_PLAIN_POOLS + FACTORY_META_POOLS + CRYPTO_POOLS,
     "optimism": ["3pool", "wsteth"],
     "xdai": ["3pool", "rai"],
     "polygon": ["aave", "factory-v2-107", "factory-v2-339"],
@@ -119,3 +121,8 @@ def network():
 @pytest.fixture(scope="module")
 def weth():
     return _WETH
+
+
+@pytest.fixture(scope="module")
+def is_crypto(pool_data):
+    return pool_data.get("id") in CRYPTO_POOLS

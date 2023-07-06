@@ -1,4 +1,4 @@
-from brownie import Contract, chain
+from brownie import Contract
 from brownie.test import given, strategy
 from hypothesis import settings
 from datetime import timedelta
