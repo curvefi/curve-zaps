@@ -34,7 +34,7 @@ def test_wrapped(
 
             desired = min(_wrapped_amounts[j], int(swap_contract.balances(j) * 0.5))
             desired = max(desired, 10**6)
-            dx = crypto_calc_zap.get_dx(swap_address, i, j, desired)
+            dx = crypto_calc_zap.get_dx(swap_address, i, j, desired, n_coins_wrapped)
             if dx == 0:
                 continue
             dy = swap_contract.get_dy(i, j, dx)

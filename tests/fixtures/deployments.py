@@ -224,5 +224,10 @@ def zap(StableCalcZap, alice, network, max_coins):
 
 
 @pytest.fixture(scope="module")
-def crypto_calc_zap(CryptoCalcZap, alice):
-    return CryptoCalcZap.deploy({'from': alice})
+def math_2_coins(Math2Coins, alice):
+    return Math2Coins.deploy({'from': alice})
+
+
+@pytest.fixture(scope="module")
+def crypto_calc_zap(CryptoCalcZap, math_2_coins, alice):
+    return CryptoCalcZap.deploy(math_2_coins, {'from': alice})
