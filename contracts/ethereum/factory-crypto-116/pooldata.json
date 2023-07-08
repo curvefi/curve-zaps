@@ -1,9 +1,9 @@
 {
     "base_pool": "3pool",
-    "pool_types": ["meta"],
+    "pool_types": ["meta", "factory"],
     "swap_address": "0xdcb11e81c8b8a1e06bf4b50d4f6f3bb31f7478c3",
     "lp_token_address": "0x8bc3f1e82ca3d63987dc12f90538c6bf818fcd0f",
-    "zap_address": "0x5de4ef4879f4fe3bbadf2227d2ac5d0e2d76c895",
+    "zap_address": "0x97aDC08FA1D849D2C48C5dcC1DaB568B169b0267",
     "gauge_addresses": ["0xb0a6f55a758c8f035c067672e89903d76a5abe9b"],
     "coins": [
         {

@@ -28,7 +28,16 @@ interface Math2:
     def newton_y(ANN: uint256, gamma: uint256, x: uint256[2], D: uint256, i: uint256) -> uint256: view
     def fee_calc(pool: address, xp: uint256[2]) -> uint256: view
 
-MAX_COINS: constant(uint256) = 3  # <- change
+interface StablePool:
+    def calc_withdraw_one_coin(_token_amount: uint256, i: int128) -> uint256: view
+
+interface StableCalcZap:
+    def calc_token_amount(pool: address, token: address, amounts: uint256[MAX_COINS], n_coins: uint256, deposit: bool, use_underlying: bool) -> uint256: view
+    def get_dx_underlying(pool: address, i: int128, j: int128, dy: uint256, n_coins: uint256) -> uint256: view
+
+
+STABLE_CALC_ZAP: constant(address) = 0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF
+MAX_COINS: constant(uint256) = 10
 PRECISION: constant(uint256) = 10**18  # The precision to convert to
 math2: immutable(address)
 math3: constant(address) = 0x8F68f4810CcE3194B6cB6F3d50fa58c2c9bDD1d5
@@ -132,9 +141,9 @@ def _get_dx_3_coins(
     return dx
 
 
-@external
+@internal
 @view
-def get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256) -> uint256:
+def _get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256) -> uint256:
     assert i != j and i < MAX_COINS and j < MAX_COINS, "coin index out of range"
     assert dy > 0, "do not exchange 0 coins"
 
@@ -163,3 +172,29 @@ def get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256)
         return self._get_dx_3_coins(pool, i, j, dy, xp, precisions, price_scale)
     else:
         return self._get_dx_2_coins(pool, i, j, dy, xp, precisions, price_scale)
+
+
+@external
+@view
+def get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256) -> uint256:
+    return self._get_dx(pool, i, j, dy, n_coins)
+
+@external
+@view
+def get_dx_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
+    if i > 0 and j > 0:
+        return StableCalcZap(STABLE_CALC_ZAP).get_dx_underlying(base_pool, convert(i - 1, int128), convert(j - 1, int128), dy, n_coins - 1)
+    elif i == 0:
+        # coin -(swap)-> LP -(remove)-> meta_coin (dy - meta_coin)
+        # 1. lp_amount = calc_token_amount([..., dy, ...], deposit=False)
+        # 2. dx = get_dx(0, 1, lp_amount)
+        base_amounts: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
+        base_amounts[j - 1] = dy
+        lp_amount: uint256 = StableCalcZap(STABLE_CALC_ZAP).calc_token_amount(base_pool, base_token, base_amounts, n_coins - 1, False, True)
+        return self._get_dx(pool, 0, 1, lp_amount, 2)
+    else:  # j == 0
+        # meta_coin -(add)-> LP -(swap)-> coin (dy - coin)
+        # 1. lp_amount = get_dx(1, 0, dy)
+        # 2. dx = calc_withdraw_one_coin(lp_amount, i - 1)
+        lp_amount: uint256 = self._get_dx(pool, 1, 0, dy, 2)
+        return StablePool(base_pool).calc_withdraw_one_coin(lp_amount, convert(i - 1, int128))
