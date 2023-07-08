@@ -28,7 +28,7 @@ def test_wrapped(crypto_calc_zap, pool_data, swap_address, n_coins_wrapped, wrap
             assert abs(dy - desired) / desired < 10**(-precision) or abs(dy - desired) == 1
 
 
-@given(underlying_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**6 * 10**18))
+@given(underlying_amounts=strategy('uint256[5]', min_value=10**18, max_value=10**6 * 10**18))
 @settings(deadline=timedelta(seconds=1000))
 def test_underlying(
         crypto_calc_zap,
@@ -55,7 +55,6 @@ def test_underlying(
                 continue
 
             desired = min(_underlying_amounts[j], int(swap_contract.balances(min(j, 1)) * 0.2) // 10**(18 - underlying_decimals[j]))
-            desired = max(desired, 10**6)
             base_pool = base_pool_data.get("swap_address")
             base_token = base_pool_data.get("lp_token_address")
             dx = crypto_calc_zap.get_dx_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
