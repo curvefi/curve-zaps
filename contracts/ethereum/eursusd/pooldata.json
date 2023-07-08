@@ -1,0 +1,21 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "swap_address": "0x98a7F18d4E56Cfe84E3D081B40001B3d5bD3eB8B",
+    "lp_token_address": "0x3D229E1B4faab62F621eF2F6A610961f7BD7b23B",
+    "gauge_addresses": ["0x65CA7Dc5CB661fC58De57B1E1aF404649a27AD35"],
+    "coins": [
+        {
+            "name": "USDC",
+            "decimals": 6,
+            "tethered": false,
+            "underlying_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+
+        },
+        {
+            "name": "EURS",
+            "decimals": 2,
+            "tethered": false,
+            "underlying_address": "0xdB25f211AB05b1c97D595516F45794528a807ad8"
+        }
+    ]
+}
