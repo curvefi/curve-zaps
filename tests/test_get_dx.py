@@ -15,7 +15,6 @@ def test_wrapped(
         wrapped_amounts,
         wrapped_decimals,
         is_meta,
-        is_factory,
         base_pool_data,
         use_lending,
         use_rate,
@@ -58,7 +57,6 @@ def test_underlying(
         underlying_decimals,
         base_pool_data,
         is_meta,
-        is_factory,
         use_lending,
 ):
     if not is_meta and not (True in use_lending):  # meta + aave,saave,ib,usdt,compound,y,busd,pax
