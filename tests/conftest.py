@@ -19,8 +19,9 @@ FACTORY_PLAIN_POOLS = ['factory-v2-283', 'factory-v2-66', 'factory-v2-235'] + ['
 FACTORY_META_POOLS = ['tusd'] + ['factory-v2-9', 'factory-v2-144', 'factory-v2-247']
 # OUSD/3Crv, TUSD/FRAXBP, tBTC/sbtc2Crv
 
-# tricrypto2,eursusd,crveth,cvxeth,spelleth,teth + eurtusd,euroc
-CRYPTO_POOLS = ["tricrypto2", "eursusd", "crveth", "cvxeth", "spelleth", "teth"] + ["eurtusd", "euroc"]
+# tricrypto2,eursusd,crveth,cvxeth,spelleth,teth,factory-crypto-37,factory-crypto-204 + eurtusd,euroc,factory-crypto-116,factory-crypto-136
+CRYPTO_POOLS = ["tricrypto2", "eursusd", "crveth", "cvxeth", "spelleth", "teth", "factory-crypto-37", "factory-crypto-204"]  # STG/USDC, LDO/ETH
+CRYPTO_POOLS += ["eurtusd", "euroc", "factory-crypto-116", "factory-crypto-136"]  # DCHF/3CRV, RSR/FRAXBP
 
 pytest_plugins = [
     "fixtures.accounts",

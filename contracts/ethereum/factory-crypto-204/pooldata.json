@@ -1,0 +1,22 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "wrapped_contract": "WETH",
+    "swap_address": "0x9409280dc1e6d33ab7a8c6ec03e5763fb61772b5",
+    "lp_token_address": "0xb79565c01b7ae53618d9b847b9443aaf4f9011e7",
+    "gauge_addresses": ["0xe5d5aa1bbe72f68df42432813485ca1fc998de32"],
+    "coins": [
+        {
+            "name": "WETH",
+            "underlying_name": "ETH",
+            "decimals": 18,
+            "wrapped_decimals": 18,
+            "underlying_address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "wrapped_address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+        },
+        {
+            "name": "LDO",
+            "decimals": 18,
+            "underlying_address": "0x5a98fcbea516cf06857215779fd812ca3bef1b32"
+        }
+    ]
+}

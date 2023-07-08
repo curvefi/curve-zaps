@@ -1,0 +1,21 @@
+{
+    "base_pool": "fraxusdc",
+    "pool_types": ["meta"],
+    "swap_address": "0x6a6283ab6e31c2aec3fa08697a8f806b740660b2",
+    "lp_token_address": "0x3f436954afb722f5d14d868762a23fab6b0dabf0",
+    "zap_address": "0x5de4ef4879f4fe3bbadf2227d2ac5d0e2d76c895",
+    "gauge_addresses": ["0xcf79921d99b99fee3dcf1a4657fcda95195b46d1"],
+    "coins": [
+        {
+            "name": "RSR",
+            "decimals": 18,
+            "underlying_address": "0x320623b8e4ff03373931769a31fc52a4e78b5d70"
+        },
+        {
+            "name": "FRAXBP",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x3175df0976dfa876431c2e9ee6bc45b65d3473cc"
+        }
+    ]
+}

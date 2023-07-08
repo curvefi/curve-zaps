@@ -1,0 +1,21 @@
+{
+    "base_pool": "3pool",
+    "pool_types": ["meta"],
+    "swap_address": "0xdcb11e81c8b8a1e06bf4b50d4f6f3bb31f7478c3",
+    "lp_token_address": "0x8bc3f1e82ca3d63987dc12f90538c6bf818fcd0f",
+    "zap_address": "0x5de4ef4879f4fe3bbadf2227d2ac5d0e2d76c895",
+    "gauge_addresses": ["0xb0a6f55a758c8f035c067672e89903d76a5abe9b"],
+    "coins": [
+        {
+            "name": "DCHF",
+            "decimals": 18,
+            "underlying_address": "0x045da4bfe02b320f4403674b3b7d121737727a36"
+        },
+        {
+            "name": "3CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490"
+        }
+    ]
+}
