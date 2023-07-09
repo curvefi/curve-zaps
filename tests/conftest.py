@@ -49,7 +49,7 @@ _POOLS = {
     "xdai": ["3pool", "rai"] + ["tricrypto", "eureusd"],
     "polygon": ["aave", "factory-v2-107", "factory-v2-339"],
     "fantom": ["2pool", "fusdt", "ib", "geist"],
-    "arbitrum": ["2pool", "wsteth"],
+    "arbitrum": ["2pool", "wsteth"] + ["tricrypto", "eursusd"],
     "avalanche": ["aave", "aaveV3", "factory-v2-66"],
 }
 
