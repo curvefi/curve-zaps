@@ -200,3 +200,28 @@ def get_dx_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n
         # 2. dx = calc_withdraw_one_coin(lp_amount, i - 1)
         lp_amount: uint256 = self._get_dx(pool, 1, 0, dy, 2)
         return StablePool(base_pool).calc_withdraw_one_coin(lp_amount, convert(i - 1, int128))
+
+
+@external
+@view
+def get_dx_tricrypto_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
+    # [...n_meta_coins...] + [coin1, coin2]
+    n_meta_coins: uint256 = n_coins - 2
+    if i < n_meta_coins and j < n_meta_coins:  # meta_coin1 -> meta_coin2
+        return StableCalcZap(STABLE_CALC_ZAP).get_dx_underlying(base_pool, convert(i, int128), convert(j, int128), dy, n_meta_coins)
+    elif i >= n_meta_coins and j >= n_meta_coins:  # coin1 -> coin2
+        return self._get_dx(pool, i - n_meta_coins + 1, j - n_meta_coins + 1, dy, 3)
+    elif i >= n_meta_coins:  # coin -> meta_coin
+        # coin -(swap)-> LP -(remove)-> meta_coin (dy - meta_coin)
+        # 1. lp_amount = calc_token_amount([..., dy, ...], deposit=False)
+        # 2. dx = get_dx(0, 1, lp_amount)
+        base_amounts: uint256[MAX_COINS] = empty(uint256[MAX_COINS])
+        base_amounts[j] = dy
+        lp_amount: uint256 = StableCalcZap(STABLE_CALC_ZAP).calc_token_amount(base_pool, base_token, base_amounts, n_meta_coins, False, True)
+        return self._get_dx(pool, i - n_meta_coins + 1, 0, lp_amount, 3)
+    else:  # j >= n_meta_coins, meta_coin -> coin
+        # meta_coin -(add)-> LP -(swap)-> coin (dy - coin)
+        # 1. lp_amount = get_dx(1, 0, dy)
+        # 2. dx = calc_withdraw_one_coin(lp_amount, i - 1)
+        lp_amount: uint256 = self._get_dx(pool, 0, j - n_meta_coins + 1, dy, 3)
+        return StablePool(base_pool).calc_withdraw_one_coin(lp_amount, convert(i, int128))
