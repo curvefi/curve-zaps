@@ -46,7 +46,7 @@ _POOLDATA = {}
 _POOLS = {
     "ethereum": PLAIN_POOLS + LENDING_POOLS + META_POOLS + FACTORY_PLAIN_POOLS + FACTORY_META_POOLS + CRYPTO_POOLS,
     "optimism": ["3pool", "wsteth"],
-    "xdai": ["3pool", "rai"],
+    "xdai": ["3pool", "rai"] + ["tricrypto", "eureusd"],
     "polygon": ["aave", "factory-v2-107", "factory-v2-339"],
     "fantom": ["2pool", "fusdt", "ib", "geist"],
     "arbitrum": ["2pool", "wsteth"],
