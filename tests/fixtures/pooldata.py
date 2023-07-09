@@ -97,7 +97,7 @@ def is_meta(pool_data):
 
 @pytest.fixture(scope="module")
 def is_crypto(pool_data):
-    return "is_crypto" in pool_data.get("pool_types", [])
+    return "crypto" in pool_data.get("pool_types", [])
 
 @pytest.fixture(scope="module")
 def is_factory(pool_data):
