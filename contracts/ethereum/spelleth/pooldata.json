@@ -1,5 +1,6 @@
 {
     "lp_contract": "CurveTokenV3",
+    "pool_types": ["crypto"],
     "wrapped_contract": "WETH",
     "swap_address": "0x98638FAcf9a3865cd033F36548713183f6996122",
     "lp_token_address": "0x8282BD15dcA2EA2bDf24163E8f2781B30C43A2ef",

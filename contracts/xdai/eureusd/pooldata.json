@@ -1,0 +1,21 @@
+{
+    "base_pool": "3pool",
+    "pool_types": ["meta", "crypto"],
+    "swap_address": "0x056C6C5e684CeC248635eD86033378Cc444459B0",
+    "lp_token_address": "0x0CA1C1eC4EBf3CC67a9f545fF90a3795b318cA4a",
+    "zap_address": "0xE3FFF29d4DC930EBb787FeCd49Ee5963DADf60b6",
+    "gauge_addresses": ["0xd91770E868c7471a9585d1819143063A40c54D00"],
+    "coins": [
+        {
+            "name": "EURe",
+            "decimals": 18,
+            "underlying_address": "0xcB444e90D8198415266c6a2724b7900fb12FC56E"
+        },
+        {
+            "name": "x3CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x1337BedC9D22ecbe766dF105c9623922A27963EC"
+        }
+    ]
+}

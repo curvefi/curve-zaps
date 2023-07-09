@@ -1,5 +1,6 @@
 {
     "lp_contract": "CurveTokenV3",
+    "pool_types": ["crypto"],
     "swap_address": "0x98a7F18d4E56Cfe84E3D081B40001B3d5bD3eB8B",
     "lp_token_address": "0x3D229E1B4faab62F621eF2F6A610961f7BD7b23B",
     "gauge_addresses": ["0x65CA7Dc5CB661fC58De57B1E1aF404649a27AD35"],

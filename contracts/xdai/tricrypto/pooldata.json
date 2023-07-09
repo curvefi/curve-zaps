@@ -1,0 +1,26 @@
+{
+    "base_pool": "3pool",
+    "pool_types": ["meta", "crypto"],
+    "swap_address": "0x5633E00994896D0F472926050eCb32E38bef3e65",
+    "lp_token_address": "0x02E7e2dd3BA409148A49D5cc9a9034D2f884F245",
+    "zap_address": "0xF182926A64C0A19234E7E1FCDfE772aA7A1CA351",
+    "gauge_addresses": ["0x0000000000000000000000000000000000000000"],
+    "coins": [
+        {
+            "name": "x3CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x1337bedc9d22ecbe766df105c9623922a27963ec"
+        },
+        {
+            "name": "WBTC",
+            "decimals": 8,
+            "underlying_address": "0x8e5bbbb09ed1ebde8674cda39a0c169401db4252"
+        },
+        {
+            "name": "WETH",
+            "decimals": 18,
+            "underlying_address": "0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1"
+        }
+    ]
+}

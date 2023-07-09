@@ -123,8 +123,3 @@ def network():
 @pytest.fixture(scope="module")
 def weth():
     return _WETH
-
-
-@pytest.fixture(scope="module")
-def is_crypto(pool_data):
-    return pool_data.get("id") in CRYPTO_POOLS

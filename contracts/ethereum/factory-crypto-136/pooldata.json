@@ -1,6 +1,6 @@
 {
     "base_pool": "fraxusdc",
-    "pool_types": ["meta", "factory"],
+    "pool_types": ["meta", "factory", "crypto"],
     "swap_address": "0x6a6283ab6e31c2aec3fa08697a8f806b740660b2",
     "lp_token_address": "0x3f436954afb722f5d14d868762a23fab6b0dabf0",
     "zap_address": "0x5de4ef4879f4fe3bbadf2227d2ac5d0e2d76c895",
