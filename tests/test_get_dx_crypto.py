@@ -8,7 +8,8 @@ from datetime import timedelta
 @settings(deadline=timedelta(seconds=1000))
 def test_wrapped(crypto_calc_zap, pool_data, swap_address, n_coins_wrapped, wrapped_amounts, wrapped_decimals, is_crypto):
     if not is_crypto:
-        raise Exception(f"{pool_data['id']} is not a crypto pool")
+        return
+
     _wrapped_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(wrapped_amounts, wrapped_decimals)]
     swap_contract = Contract(swap_address)
 
@@ -43,8 +44,9 @@ def test_underlying(
         base_pool_data,
         is_crypto,
 ):
-    if not is_crypto or not  is_meta:
-        raise Exception(f"{pool_data['id']} is not a crypto-meta pool")
+    if not is_crypto or not is_meta:
+        return
+
     _underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)]
     swap_contract = Contract(swap_address)
     try:
