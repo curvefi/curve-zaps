@@ -179,12 +179,13 @@ def _get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256
 def get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256) -> uint256:
     return self._get_dx(pool, i, j, dy, n_coins)
 
+
 @external
 @view
-def get_dx_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
-    if i > 0 and j > 0:
+def get_dx_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
+    if i > 0 and j > 0:  # meta_coin1 -> meta_coin2
         return StableCalcZap(STABLE_CALC_ZAP).get_dx_underlying(base_pool, convert(i - 1, int128), convert(j - 1, int128), dy, n_coins - 1)
-    elif i == 0:
+    elif i == 0:  # coin -> meta_coin
         # coin -(swap)-> LP -(remove)-> meta_coin (dy - meta_coin)
         # 1. lp_amount = calc_token_amount([..., dy, ...], deposit=False)
         # 2. dx = get_dx(0, 1, lp_amount)
@@ -192,7 +193,7 @@ def get_dx_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coin
         base_amounts[j - 1] = dy
         lp_amount: uint256 = StableCalcZap(STABLE_CALC_ZAP).calc_token_amount(base_pool, base_token, base_amounts, n_coins - 1, False, True)
         return self._get_dx(pool, 0, 1, lp_amount, 2)
-    else:  # j == 0
+    else:  # j == 0, meta_coin -> coin
         # meta_coin -(add)-> LP -(swap)-> coin (dy - coin)
         # 1. lp_amount = get_dx(1, 0, dy)
         # 2. dx = calc_withdraw_one_coin(lp_amount, i - 1)

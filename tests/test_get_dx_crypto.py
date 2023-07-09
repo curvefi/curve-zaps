@@ -57,7 +57,7 @@ def test_underlying(
             desired = min(_underlying_amounts[j], int(swap_contract.balances(min(j, 1)) * 0.2) // 10**(18 - underlying_decimals[j]))
             base_pool = base_pool_data.get("swap_address")
             base_token = base_pool_data.get("lp_token_address")
-            dx = crypto_calc_zap.get_dx_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
+            dx = crypto_calc_zap.get_dx_meta_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
             if dx == 0:
                 continue
             if is_factory:
