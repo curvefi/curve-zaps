@@ -40,12 +40,13 @@ STABLE_CALC_ZAP: constant(address) = 0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF
 MAX_COINS: constant(uint256) = 10
 PRECISION: constant(uint256) = 10**18  # The precision to convert to
 math2: immutable(address)
-math3: constant(address) = 0x8F68f4810CcE3194B6cB6F3d50fa58c2c9bDD1d5
+math3: immutable(address)
 
 
 @external
-def __init__(_math2: address):
+def __init__(_math2: address, _math3: address):
     math2 = _math2
+    math3 = _math3
 
 
 @internal

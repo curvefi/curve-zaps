@@ -229,5 +229,10 @@ def math_2_coins(Math2Coins, alice):
 
 
 @pytest.fixture(scope="module")
-def crypto_calc_zap(CryptoCalcZap, math_2_coins, alice):
-    return CryptoCalcZap.deploy(math_2_coins, {'from': alice})
+def math_3_coins(Math3Coins, alice):
+    return Math3Coins.deploy({'from': alice})
+
+
+@pytest.fixture(scope="module")
+def crypto_calc_zap(CryptoCalcZap, math_2_coins, math_3_coins, alice):
+    return CryptoCalcZap.deploy(math_2_coins, math_3_coins, {'from': alice})
