@@ -15,12 +15,15 @@ def deposit_address(pool_data):
 @pytest.fixture(scope="module")
 def underlying_decimals(pool_data, base_pool_data):
     # number of decimal places for each underlying coin in the active pool
-    decimals = [i.get("decimals", i.get("wrapped_decimals")) for i in pool_data["coins"]]
+    decimals = []
+    for coin in pool_data["coins"]:
+        if coin.get("base_pool_token", False):
+            for meta_coin in base_pool_data["coins"]:
+                decimals.append(meta_coin.get("decimals", meta_coin.get("wrapped_decimals")))
+        else:
+            decimals.append(coin.get("decimals", coin.get("wrapped_decimals")))
 
-    if base_pool_data is None:
-        return decimals
-    base_decimals = [i.get("decimals", i.get("wrapped_decimals")) for i in base_pool_data["coins"]]
-    return decimals[:-1] + base_decimals
+    return decimals
 
 
 @pytest.fixture(scope="module")
