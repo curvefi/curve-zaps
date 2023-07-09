@@ -1,4 +1,4 @@
-from brownie import Contract
+from brownie import Contract, project
 from brownie.test import given, strategy
 from hypothesis import settings
 from datetime import timedelta
@@ -47,17 +47,32 @@ def test_underlying(
         raise Exception(f"{pool_data['id']} is not a crypto-meta pool")
     _underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)]
     swap_contract = Contract(swap_address)
-    pool_zap_contract = Contract(deposit_address)
+    try:
+        pool_zap_contract = Contract.from_explorer(deposit_address)
+    except:
+        pool_zap_contract = Contract.from_abi('Coin', deposit_address, project.get_loaded_projects()[0].interface.CryptoMetaZap.abi)
 
     for i in range(n_coins_underlying):
         for j in range(n_coins_underlying):
             if i == j:
                 continue
 
-            desired = min(_underlying_amounts[j], int(swap_contract.balances(min(j, 1)) * 0.2) // 10**(18 - underlying_decimals[j]))
             base_pool = base_pool_data.get("swap_address")
             base_token = base_pool_data.get("lp_token_address")
-            dx = crypto_calc_zap.get_dx_meta_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
+            base_n_coins = len(base_pool_data["coins"])
+            if n_coins_underlying - base_n_coins == 1:  # 2-crypto
+                if j == 0:
+                    desired = min(_underlying_amounts[j], int(swap_contract.balances(j) * 0.5))
+                else:
+                    desired = min(_underlying_amounts[j], int(swap_contract.balances(1) * 0.2) // 10 ** (18 - underlying_decimals[j]))
+                dx = crypto_calc_zap.get_dx_meta_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
+            else:  # tricrypto
+                if j >= base_n_coins:
+                    desired = min(_underlying_amounts[j], int(swap_contract.balances(j - base_n_coins + 1) * 0.5))
+                else:
+                    desired = min(_underlying_amounts[j], int(swap_contract.balances(0) * 0.2) // 10 ** (18 - underlying_decimals[j]))
+                dx = crypto_calc_zap.get_dx_tricrypto_meta_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
+
             if dx == 0:
                 continue
             if is_factory:
