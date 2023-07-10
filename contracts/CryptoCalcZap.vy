@@ -82,7 +82,7 @@ def _get_dx_2_coins(
 
     _dy: uint256 = dy * 10**10 / (10**10 - Math2(math2).fee_calc(pool, _xp))
     _xp = [xp[0], xp[1]]
-    _xp[j] -= dy
+    _xp[j] -= _dy
     _xp[0] *= precisions[0]
     _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
     x = Math2(math2).newton_y(A, gamma, _xp, D, i)
@@ -129,7 +129,7 @@ def _get_dx_3_coins(
 
     _dy: uint256 = dy * 10**10 / (10**10 - Curve(pool).fee_calc(_xp))
     _xp = [xp[0], xp[1], xp[2]]
-    _xp[j] -= dy
+    _xp[j] -= _dy
     _xp[0] *= precisions[0]
     _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
     _xp[2] = _xp[2] * price_scale[1] * precisions[2] / PRECISION
