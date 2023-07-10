@@ -80,7 +80,7 @@ def _get_dx_2_coins(
 
     # Now we can calc fees with better precision
 
-    _dy: uint256 = dy - Math2(math2).fee_calc(pool, _xp) * dy / 10**10
+    _dy: uint256 = dy * 10**10 / (10**10 - Math2(math2).fee_calc(pool, _xp))
     _xp = [xp[0], xp[1]]
     _xp[j] -= dy
     _xp[0] *= precisions[0]
@@ -127,7 +127,7 @@ def _get_dx_3_coins(
 
     # Now we can calc fees with better precision
 
-    _dy: uint256 = dy - Curve(pool).fee_calc(_xp) * dy / 10**10
+    _dy: uint256 = dy * 10**10 / (10**10 - Curve(pool).fee_calc(_xp))
     _xp = [xp[0], xp[1], xp[2]]
     _xp[j] -= dy
     _xp[0] *= precisions[0]
