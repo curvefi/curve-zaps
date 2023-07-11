@@ -57,8 +57,8 @@ def _max_amounts(swap_contract, decimals, is_tricrypto=False, is_meta_underlying
 
 @given(wrapped_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**6 * 10**18))
 @settings(deadline=timedelta(seconds=1000))
-def test_wrapped(crypto_calc_zap, pool_data, swap_address, n_coins_wrapped, wrapped_amounts, wrapped_decimals, is_crypto, math_2_coins, math_3_coins):
-    if not is_crypto:
+def test_wrapped(crypto_calc_zap, pool_data, swap_address, n_coins_wrapped, wrapped_amounts, wrapped_decimals, is_crypto, is_fake):
+    if not is_crypto or is_fake:
         return
 
     swap_contract = Contract(swap_address)
@@ -98,8 +98,6 @@ def test_underlying(
         is_factory,
         base_pool_data,
         is_crypto,
-        math_2_coins,
-        math_3_coins,
 ):
     if not is_crypto or not is_meta:
         return

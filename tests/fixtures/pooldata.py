@@ -102,6 +102,12 @@ def is_meta(pool_data):
 def is_crypto(pool_data):
     return "crypto" in pool_data.get("pool_types", [])
 
+
+@pytest.fixture(scope="module")
+def is_fake(pool_data):
+    return "fake" in pool_data.get("pool_types", [])
+
+
 @pytest.fixture(scope="module")
 def is_factory(pool_data):
     return "factory" in pool_data.get("pool_types", [])
