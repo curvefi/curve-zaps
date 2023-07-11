@@ -1,0 +1,21 @@
+{
+    "lp_contract": "CurveTokenV3",
+    "pool_types": ["crypto"],
+    "swap_address": "0xc0b78f2e96de56d08c7608697680e935fe47295b",
+    "lp_token_address": "0x43363b5b640284da0bb8e2c545e43c1583277022",
+    "gauge_addresses": ["0x0000000000000000000000000000000000000000"],
+    "coins": [
+        {
+            "name": "USDC",
+            "decimals": 6,
+            "underlying_address": "0x04068da6c83afcfa0e13ba15a6696662335d5b75",
+            "underlying_interface": "AnyswapERC20"
+        },
+        {
+            "name": "PAR",
+            "decimals": 18,
+            "underlying_address": "0x13082681e8ce9bd0af505912d306403592490fc7",
+            "underlying_interface": "AnyswapERC20"
+        }
+    ]
+}

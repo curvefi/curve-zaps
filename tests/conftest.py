@@ -48,7 +48,7 @@ _POOLS = {
     "optimism": ["3pool", "wsteth"],
     "xdai": ["3pool", "rai"] + ["tricrypto", "eureusd"],
     "polygon": ["aave", "factory-v2-107", "factory-v2-339"],
-    "fantom": ["2pool", "fusdt", "ib", "geist"],
+    "fantom": ["2pool", "fusdt", "ib", "geist"] + ["tricrypto", "factory-crypto-7"],
     "arbitrum": ["2pool", "wsteth"] + ["tricrypto", "eursusd"],
     "avalanche": ["aave", "aaveV3", "factory-v2-66", "factory-v2-99"] + ["avaxcrypto", "atricrypto"],
 }
