@@ -50,7 +50,7 @@ _POOLS = {
     "polygon": ["aave", "factory-v2-107", "factory-v2-339"],
     "fantom": ["2pool", "fusdt", "ib", "geist"],
     "arbitrum": ["2pool", "wsteth"] + ["tricrypto", "eursusd"],
-    "avalanche": ["aave", "aaveV3", "factory-v2-66"],
+    "avalanche": ["aave", "aaveV3", "factory-v2-66", "factory-v2-99"] + ["avaxcrypto", "atricrypto"],
 }
 
 _WETH = {

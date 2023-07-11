@@ -1,0 +1,30 @@
+{
+    "base_pool": "factory-v2-99",
+    "pool_types": ["meta", "crypto"],
+    "wrapped_contract": "WETH",
+    "swap_address": "0x204f0620e7e7f07b780535711884835977679bba",
+    "lp_token_address": "0x6a4ac4de3bf6bcd2975e2cb15a46954d9ba43fdb",
+    "zap_address": "0x25b3D0eeBcd85Ea5A970981c5E2A342f4e1064e8",
+    "gauge_addresses": ["0xf6c5be565a25be925c9d8fb0368a87bd20ee470b"],
+    "coins": [
+        {
+            "name": "2CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x0974D9d3bc463Fa17497aAFc3a87535553298FbE"
+        },
+        {
+            "name": "BTC.b",
+            "decimals": 8,
+            "underlying_address": "0x152b9d0FdC40C096757F570A51E494bd4b943E50"
+        },
+        {
+            "name": "WAVAX",
+            "underlying_name": "AVAX",
+            "decimals": 18,
+            "wrapped_decimals": 18,
+            "underlying_address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "wrapped_address": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
+        }
+    ]
+}

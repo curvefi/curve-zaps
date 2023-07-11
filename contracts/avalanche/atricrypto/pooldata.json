@@ -1,0 +1,26 @@
+{
+    "base_pool": "aave",
+    "pool_types": ["meta", "crypto", "fake"],
+    "swap_address": "0xB755B949C126C04e0348DD881a5cF55d424742B2",
+    "lp_token_address": "0x1daB6560494B04473A0BE3E7D83CF3Fdf3a51828",
+    "zap_address": "0x58e57cA18B7A47112b877E31929798Cd3D703b0f",
+    "gauge_addresses": ["0x1879075f1c055564CB968905aC404A5A01a1699A"],
+    "coins": [
+        {
+            "name": "av3CRV",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0x1337BedC9D22ecbe766dF105c9623922A27963EC"
+        },
+        {
+            "name": "avWBTC",
+            "decimals": 8,
+            "underlying_address": "0x686bEF2417b6Dc32C50a3cBfbCC3bb60E1e9a15D"
+        },
+        {
+            "name": "avWETH",
+            "decimals": 18,
+            "underlying_address": "0x53f7c5869a859F0AeC3D334ee8B4Cf01E3492f21"
+        }
+    ]
+}

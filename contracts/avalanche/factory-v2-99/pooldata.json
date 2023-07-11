@@ -1,0 +1,21 @@
+{
+    "lp_contract": "CurveTokenV5",
+    "pool_types": ["factory"],
+    "swap_address": "0x0974d9d3bc463fa17497aafc3a87535553298fbe",
+    "lp_token_address": "0x0974d9d3bc463fa17497aafc3a87535553298fbe",
+    "gauge_addresses": ["0xccc69bdeea2143def4279676e5d80a33e58174a0"],
+    "coins": [
+        {
+            "name": "USDC",
+            "decimals": 6,
+            "underlying_address": "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
+            "underlying_interface": "AvalancheERC20"
+        },
+        {
+            "name": "USDt",
+            "decimals": 6,
+            "underlying_address": "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7",
+            "underlying_interface": "AvalancheERC20"
+        }
+    ]
+}
