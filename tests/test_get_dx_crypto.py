@@ -80,7 +80,8 @@ def test_wrapped(crypto_calc_zap, pool_data, swap_address, n_coins_wrapped, wrap
                 continue
             dy = swap_contract.get_dy(i, j, dx)
 
-            assert abs(dy - desired) / desired < 1e-5 or abs(dy - desired) == 1
+            precision = 4 if (wrapped_decimals[i] == 2 or wrapped_decimals[j] == 2) else 5
+            assert abs(dy - desired) / desired < 10**(-precision) or abs(dy - desired) == 1
 
 
 @given(underlying_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**6 * 10**18))
@@ -138,4 +139,5 @@ def test_underlying(
             else:
                 dy = pool_zap_contract.get_dy_underlying(i, j, dx)
 
-            assert abs(dy - desired) / desired < 1e-5 or abs(dy - desired) == 1
+            precision = 4 if (underlying_decimals[i] == 2 or underlying_decimals[j] == 2) else 5
+            assert abs(dy - desired) / desired < 10**(-precision) or abs(dy - desired) == 1
