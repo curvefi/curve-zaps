@@ -63,30 +63,25 @@ def _get_dx_2_coins(
     A: uint256 = Curve(pool).A()
     gamma: uint256 = Curve(pool).gamma()
     D: uint256 = Curve(pool).D()
-    _xp: uint256[2] = [xp[0], xp[1]]
+    _xp_initial: uint256[2] = [
+        xp[0] * precisions[0],
+        xp[1] * price_scale[0] * precisions[1] / PRECISION,
+    ]
     if Curve(pool).future_A_gamma_time() > 0:
+        D = Math2(math2).newton_D(A, gamma, _xp_initial)
+
+    _fee: uint256 = 0
+    x: uint256 = 0
+    for k in range(10):
+        _xp: uint256[2] = [xp[0], xp[1]]
+        _xp[j] -= dy * 10 ** 10 / (10 ** 10 - _fee)
         _xp[0] *= precisions[0]
         _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
-        D = Math2(math2).newton_D(A, gamma, _xp)
+        x = Math2(math2).newton_y(A, gamma, _xp, D, i)
+        _xp[i] = x
+        _fee = Math2(math2).fee_calc(pool, _xp)
 
-    # Calc new balances without fees
-
-    _xp = [xp[0], xp[1]]
-    _xp[j] -= dy
-    _xp[0] *= precisions[0]
-    _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
-    x: uint256 = Math2(math2).newton_y(A, gamma, _xp, D, i)
-    _xp[i] = x
-
-    # Now we can calc fees with better precision
-
-    _dy: uint256 = dy * 10**10 / (10**10 - Math2(math2).fee_calc(pool, _xp))
-    _xp = [xp[0], xp[1]]
-    _xp[j] -= _dy
-    _xp[0] *= precisions[0]
-    _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
-    x = Math2(math2).newton_y(A, gamma, _xp, D, i)
-    dx: uint256 = x - _xp[i] + 1
+    dx: uint256 = x - _xp_initial[i] + 1
     if i > 0:
         dx = dx * PRECISION / price_scale[i - 1]
     dx /= precisions[i]
@@ -108,33 +103,29 @@ def _get_dx_3_coins(
     A: uint256 = Curve(pool).A()
     gamma: uint256 = Curve(pool).gamma()
     D: uint256 = Curve(pool).D()
-    _xp: uint256[3] = [xp[0], xp[1], xp[2]]
+    _xp_initial: uint256[3] = [
+        xp[0] * precisions[0],
+        xp[1] * price_scale[0] * precisions[1] / PRECISION,
+        xp[2] * price_scale[1] * precisions[2] / PRECISION,
+    ]
     if Curve(pool).future_A_gamma_time() > 0:
-        _xp[0] *= precisions[0]
-        _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
-        _xp[2] = _xp[2] * price_scale[1] * precisions[2] / PRECISION
-        D = Math3(math3).newton_D(A, gamma, _xp)
+        D = Math3(math3).newton_D(A, gamma, _xp_initial)
 
     # Calc new balances without fees
 
-    _xp = [xp[0], xp[1], xp[2]]
-    _xp[j] -= dy
-    _xp[0] *= precisions[0]
-    _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
-    _xp[2] = _xp[2] * price_scale[1] * precisions[2] / PRECISION
-    x: uint256 = Math3(math3).newton_y(A, gamma, _xp, D, i)
-    _xp[i] = x
+    _fee: uint256 = 0
+    x: uint256 = 0
+    for k in range(10):
+        _xp: uint256[3] = [xp[0], xp[1], xp[2]]
+        _xp[j] -= dy * 10**10 / (10**10 - _fee)
+        _xp[0] *= precisions[0]
+        _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
+        _xp[2] = _xp[2] * price_scale[1] * precisions[2] / PRECISION
+        x = Math3(math3).newton_y(A, gamma, _xp, D, i)
+        _xp[i] = x
+        _fee = Curve(pool).fee_calc(_xp)
 
-    # Now we can calc fees with better precision
-
-    _dy: uint256 = dy * 10**10 / (10**10 - Curve(pool).fee_calc(_xp))
-    _xp = [xp[0], xp[1], xp[2]]
-    _xp[j] -= _dy
-    _xp[0] *= precisions[0]
-    _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
-    _xp[2] = _xp[2] * price_scale[1] * precisions[2] / PRECISION
-    x = Math3(math3).newton_y(A, gamma, _xp, D, i)
-    dx: uint256 = x - _xp[i] + 1
+    dx: uint256 = x - _xp_initial[i] + 1
     if i > 0:
         dx = dx * PRECISION / price_scale[i - 1]
     dx /= precisions[i]
