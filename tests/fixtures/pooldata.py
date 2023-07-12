@@ -13,13 +13,17 @@ def deposit_address(pool_data):
 
 
 @pytest.fixture(scope="module")
-def underlying_decimals(pool_data, base_pool_data):
+def underlying_decimals(pool_data, base_pool_data, second_base_pool_data):
     # number of decimal places for each underlying coin in the active pool
     decimals = []
     for coin in pool_data["coins"]:
         if coin.get("base_pool_token", False):
             for meta_coin in base_pool_data["coins"]:
-                decimals.append(meta_coin.get("decimals", meta_coin.get("wrapped_decimals")))
+                if meta_coin.get("base_pool_token", False):
+                    for second_meta_coin in second_base_pool_data["coins"]:
+                        decimals.append(second_meta_coin.get("decimals", second_meta_coin.get("wrapped_decimals")))
+                else:
+                    decimals.append(meta_coin.get("decimals", meta_coin.get("wrapped_decimals")))
         else:
             decimals.append(coin.get("decimals", coin.get("wrapped_decimals")))
 
@@ -96,6 +100,11 @@ def n_coins_underlying(underlying_decimals):
 @pytest.fixture(scope="module")
 def is_meta(pool_data):
     return "meta" in pool_data.get("pool_types", [])
+
+
+@pytest.fixture(scope="module")
+def is_double_meta(second_base_pool_data):
+    return second_base_pool_data is not None
 
 
 @pytest.fixture(scope="module")

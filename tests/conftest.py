@@ -47,7 +47,7 @@ _POOLS = {
     "ethereum": PLAIN_POOLS + LENDING_POOLS + META_POOLS + FACTORY_PLAIN_POOLS + FACTORY_META_POOLS + CRYPTO_POOLS,
     "optimism": ["3pool", "wsteth"],
     "xdai": ["3pool", "rai"] + ["tricrypto", "eureusd"],
-    "polygon": ["aave", "factory-v2-107", "factory-v2-339"],
+    "polygon": ["aave", "factory-v2-107", "factory-v2-339"] + ["atricrypto3", "crv-tricrypto", "wmatic-tricrypto"],
     "fantom": ["2pool", "fusdt", "ib", "geist"] + ["tricrypto", "factory-crypto-7"],
     "arbitrum": ["2pool", "wsteth"] + ["tricrypto", "eursusd"],
     "avalanche": ["aave", "aaveV3", "factory-v2-66", "factory-v2-99"] + ["avaxcrypto", "atricrypto"],
@@ -113,6 +113,13 @@ def pool_data(request):
 @pytest.fixture(scope="module")
 def base_pool_data(pool_data):
     return pool_data.get("base_pool", None)
+
+
+@pytest.fixture(scope="module")
+def second_base_pool_data(base_pool_data):
+    if base_pool_data is None:
+        return None
+    return base_pool_data.get("base_pool", None)
 
 
 @pytest.fixture(scope="module")

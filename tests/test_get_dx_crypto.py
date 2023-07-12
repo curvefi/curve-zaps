@@ -84,7 +84,7 @@ def test_wrapped(crypto_calc_zap, pool_data, swap_address, n_coins_wrapped, wrap
             assert abs(dy - desired) / desired < 10**(-precision) or abs(dy - desired) == 1
 
 
-@given(underlying_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**6 * 10**18))
+@given(underlying_amounts=strategy('uint256[6]', min_value=10**16, max_value=10**6 * 10**18))
 @settings(deadline=timedelta(seconds=1000))
 def test_underlying(
         crypto_calc_zap,
@@ -95,9 +95,11 @@ def test_underlying(
         underlying_amounts,
         underlying_decimals,
         is_meta,
+        is_double_meta,
         is_factory,
-        base_pool_data,
         is_crypto,
+        base_pool_data,
+        second_base_pool_data,
 ):
     if not is_crypto or not is_meta:
         return
@@ -113,9 +115,16 @@ def test_underlying(
     base_n_coins = len(base_pool_data["coins"])
     is_tricrypto = n_coins_underlying - base_n_coins + 1 == 3
 
+    if pool_data["id"] == "crv-tricrypto":
+        min_amounts = [100 * 10**18, 100 * 10**18, 100 * 10**6, 100 * 10**6, int(0.01 * 10**8), int(0.01 * 10**18)]
+        max_amounts = [10**5 * 10**18, 10**4 * 10**18, 10**4 * 10**6, 10**4 * 10**6, int(5 * 10**8), int(50 * 10**18)]
+    elif pool_data["id"] == "wmatic-tricrypto":
+        min_amounts = [100 * 10**18, 100 * 10**18, 100 * 10**6, 100 * 10**6, int(0.01 * 10**8), int(0.01 * 10**18)]
+        max_amounts = [10**5 * 10**18, 10**4 * 10**18, 10**4 * 10**6, 10**4 * 10**6, int(0.5 * 10**8), int(5 * 10**18)]
+    else:
+        min_amounts = _min_amounts(swap_contract, underlying_decimals, is_tricrypto, is_meta_underlying=True, base_n_coins=base_n_coins)
+        max_amounts = _max_amounts(swap_contract, underlying_decimals, is_tricrypto, is_meta_underlying=True, base_n_coins=base_n_coins)
     _underlying_amounts = [int(x // 10 ** (18 - d)) for x, d in zip(underlying_amounts, underlying_decimals)]
-    min_amounts = _min_amounts(swap_contract, underlying_decimals, is_tricrypto, is_meta_underlying=True, base_n_coins=base_n_coins)
-    max_amounts = _max_amounts(swap_contract, underlying_decimals, is_tricrypto, is_meta_underlying=True, base_n_coins=base_n_coins)
     _underlying_amounts = [max(a, min_a) for a, min_a in zip(_underlying_amounts, min_amounts)]
     _underlying_amounts = [min(a, max_a) for a, max_a in zip(_underlying_amounts, max_amounts)]
 
@@ -125,7 +134,12 @@ def test_underlying(
                 continue
 
             desired = _underlying_amounts[j]
-            if is_tricrypto:
+            if is_double_meta:
+                base_pool_zap = base_pool_data.get("zap_address")
+                second_base_pool = second_base_pool_data.get("swap_address")
+                second_base_token = second_base_pool_data.get("lp_token_address")
+                dx = crypto_calc_zap.get_dx_double_meta_underlying(swap_address, i, j, desired, base_pool, base_pool_zap, second_base_pool, second_base_token)
+            elif is_tricrypto:
                 dx = crypto_calc_zap.get_dx_tricrypto_meta_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
             else:
                 dx = crypto_calc_zap.get_dx_meta_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)

@@ -1,0 +1,23 @@
+{
+    "base_pool": "atricrypto3",
+    "pool_types": ["meta", "crypto", "factory"],
+    "swap_address": "0xc7c939a474cb10eb837894d1ed1a77c61b268fa7",
+    "lp_token_address": "0xa73edcf18421b56d9af1ce08a34e102e23b2c4b6",
+    "zap_address": "0x3d8EADb739D1Ef95dd53D718e4810721837c69c1",
+    "gauge_addresses": ["0x40371aad2a24ed841316ef30938881440fd4426c"],
+    "coins": [
+        {
+            "name": "CRV",
+            "decimals": 18,
+            "underlying_address": "0x172370d5cd63279efa6d502dab29171933a610af",
+            "underlying_interface": "BridgeToken"
+        },
+        {
+            "name": "crvUSDBTCETH",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0xdad97f7713ae9437fa9249920ec8507e5fbb23d3",
+            "underlying_interface": "CurveLpToken"
+        }
+    ]
+}

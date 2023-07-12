@@ -1,0 +1,25 @@
+{
+    "base_pool": "atricrypto3",
+    "pool_types": ["meta", "crypto", "factory"],
+    "swap_address": "0x7bbc0e92505b485aeb3e82e828cb505daf1e50c6",
+    "lp_token_address": "0xb0658482b405496c4ee9453cd0a463b134aef9d0",
+    "zap_address": "0x3d8EADb739D1Ef95dd53D718e4810721837c69c1",
+    "gauge_addresses": ["0x0e2f214b8f5d0cca011a8298bb907fb62f535160"],
+    "coins": [
+        {
+            "name": "WMATIC",
+            "underlying_name": "MATIC",
+            "decimals": 18,
+            "wrapped_decimals": 18,
+            "underlying_address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "wrapped_address": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
+        },
+        {
+            "name": "crvUSDBTCETH",
+            "decimals": 18,
+            "base_pool_token": true,
+            "underlying_address": "0xdad97f7713ae9437fa9249920ec8507e5fbb23d3",
+            "underlying_interface": "CurveLpToken"
+        }
+    ]
+}
