@@ -175,6 +175,7 @@ def get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256)
 @external
 @view
 def get_dx_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
+    # [coin] + [...n_meta_coins...]
     if i > 0 and j > 0:  # meta_coin1 -> meta_coin2
         return StableCalcZap(STABLE_CALC_ZAP).get_dx_underlying(base_pool, convert(i - 1, int128), convert(j - 1, int128), dy, n_coins - 1)
     elif i == 0:  # coin -> meta_coin
