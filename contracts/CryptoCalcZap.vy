@@ -35,6 +35,10 @@ interface StableCalcZap:
     def calc_token_amount(pool: address, token: address, amounts: uint256[MAX_COINS], n_coins: uint256, deposit: bool, use_underlying: bool) -> uint256: view
     def get_dx_underlying(pool: address, i: int128, j: int128, dy: uint256, n_coins: uint256) -> uint256: view
 
+interface AtricryptoZap:
+    def calc_token_amount(amounts: uint256[5], deposit: bool) -> uint256: view
+    def calc_withdraw_one_coin(token_amount: uint256, i: uint256) -> uint256: view
+
 
 STABLE_CALC_ZAP: constant(address) = 0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF
 MAX_COINS: constant(uint256) = 10
@@ -194,9 +198,9 @@ def get_dx_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n
         return StablePool(base_pool).calc_withdraw_one_coin(lp_amount, convert(i - 1, int128))
 
 
-@external
+@internal
 @view
-def get_dx_tricrypto_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
+def _get_dx_tricrypto_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
     # [...n_meta_coins...] + [coin1, coin2]
     n_meta_coins: uint256 = n_coins - 2
     if i < n_meta_coins and j < n_meta_coins:  # meta_coin1 -> meta_coin2
@@ -218,3 +222,41 @@ def get_dx_tricrypto_meta_underlying(pool: address, i: uint256, j: uint256, dy: 
         lp_amount: uint256 = self._get_dx(pool, 0, j - n_meta_coins + 1, dy, 3)
         # This is not right. Should be something like calc_add_one_coin. But tests say that it's precise enough.
         return StablePool(base_pool).calc_withdraw_one_coin(lp_amount, convert(i, int128))
+
+
+@external
+@view
+def get_dx_tricrypto_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
+    return self._get_dx_tricrypto_meta_underlying(pool, i, j, dy, n_coins, base_pool, base_token)
+
+
+@external
+@view
+def get_dx_double_meta_underlying(
+        pool: address,
+        i: uint256,
+        j: uint256,
+        dy: uint256,
+        base_pool: address,
+        base_pool_zap: address,
+        second_base_pool: address,
+        second_base_token: address,
+) -> uint256:
+    # [coin] + [...n_meta_coins...]
+    if i > 0 and j > 0:  # meta_coin1 -> meta_coin2
+        return self._get_dx_tricrypto_meta_underlying(base_pool, i - 1, j - 1, dy, 5, second_base_pool, second_base_token)
+    elif i == 0:  # coin -> meta_coin
+        # coin -(swap)-> LP -(remove)-> meta_coin (dy - meta_coin)
+        # 1. lp_amount = calc_token_amount([..., dy, ...], deposit=False)
+        # 2. dx = get_dx(0, 1, lp_amount)
+        base_amounts: uint256[5] = empty(uint256[5])
+        base_amounts[j - 1] = dy
+        lp_amount: uint256 = AtricryptoZap(base_pool_zap).calc_token_amount(base_amounts, False)
+        return self._get_dx(pool, 0, 1, lp_amount, 2)
+    else:  # j == 0, meta_coin -> coin
+        # meta_coin -(add)-> LP -(swap)-> coin (dy - coin)
+        # 1. lp_amount = get_dx(1, 0, dy)
+        # 2. dx = calc_withdraw_one_coin(lp_amount, i - 1)
+        lp_amount: uint256 = self._get_dx(pool, 1, 0, dy, 2)
+        # This is not right. Should be something like calc_add_one_coin. But tests say that it's precise enough.
+        return AtricryptoZap(base_pool_zap).calc_withdraw_one_coin(lp_amount, i - 1)
