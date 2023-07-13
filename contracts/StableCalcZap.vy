@@ -279,24 +279,27 @@ def _rates(pool: address, pool_type: uint8, coins: address[MAX_COINS], n_coins: 
 
 @pure
 @internal
-def _dynamic_fee(xpi: uint256, xpj: uint256, _fee: uint256, _feemul: uint256) -> uint256:
-    if _feemul <= FEE_DENOMINATOR:
-        return _fee
+def _dynamic_fee(xpi: uint256, xpj: uint256, fee: uint256, feemul: uint256) -> uint256:
+    if feemul <= FEE_DENOMINATOR:
+        return fee
     else:
         xps2: uint256 = (xpi + xpj)
         xps2 *= xps2  # Doing just ** 2 can overflow apparently
-        return (_feemul * _fee) / ((_feemul - FEE_DENOMINATOR) * 4 * xpi * xpj / xps2 + FEE_DENOMINATOR)
+        return (feemul * fee) / ((feemul - FEE_DENOMINATOR) * 4 * xpi * xpj / xps2 + FEE_DENOMINATOR)
 
 
 @internal
 @view
-def _fee(pool: address, pool_type: uint8, n_coins: uint256, xpi: uint256, xpj: uint256) -> uint256:
-    _fee: uint256 = Pool(pool).fee() * n_coins / (4 * (n_coins - 1))
+def _fee(pool: address, pool_type: uint8, n_coins: uint256, xpi: uint256, xpj: uint256, is_swap: bool) -> uint256:
+    fee: uint256 = Pool(pool).fee()
+    if not is_swap:
+        fee = fee * n_coins / (4 * (n_coins - 1))
+
     if pool_type == 3:  # aave
-        _feemul: uint256 = Pool(pool).offpeg_fee_multiplier()
-        return self._dynamic_fee(xpi, xpj, _fee, _feemul)
+        feemul: uint256 = Pool(pool).offpeg_fee_multiplier()
+        return self._dynamic_fee(xpi, xpj, fee, feemul)
     else:
-        return _fee
+        return fee
 
 
 @internal
@@ -501,7 +504,7 @@ def _calc_token_amount(
             else:
                 difference = new_balances[i] - ideal_balance
             xs: uint256 = old_balances[i] + new_balances[i]  # only for aave
-            fees[i] = self._fee(pool, pool_type, n_coins, ys, xs) * difference / FEE_DENOMINATOR
+            fees[i] = self._fee(pool, pool_type, n_coins, ys, xs, False) * difference / FEE_DENOMINATOR
             new_balances[i] -= fees[i]
         D2 = self.get_D_mem(pool, rates, new_balances, n_coins)
 
@@ -632,11 +635,11 @@ def _get_dx(
         y = xp[j] - dy * rates[j] / PRECISION
 
     x: uint256 = self.get_x(pool, i, j, y, xp, n_coins)
-    _fee: uint256 = self._fee(pool, pool_type, n_coins, (xp[i] + x) / 2, (xp[j] + y) / 2)
+    fee: uint256 = self._fee(pool, pool_type, n_coins, (xp[i] + x) / 2, (xp[j] + y) / 2, True)
     if use_underlying:
-        y = xp[j] - (dy * FEE_DENOMINATOR / (FEE_DENOMINATOR - _fee)) * self._underlying_precision(j, pool_type, coins, use_rate)
+        y = xp[j] - (dy * FEE_DENOMINATOR / (FEE_DENOMINATOR - fee)) * self._underlying_precision(j, pool_type, coins, use_rate)
     else:
-        y = xp[j] - (dy * FEE_DENOMINATOR / (FEE_DENOMINATOR - _fee)) * rates[j] / PRECISION
+        y = xp[j] - (dy * FEE_DENOMINATOR / (FEE_DENOMINATOR - fee)) * rates[j] / PRECISION
 
     x = self.get_x(pool, i, j, y, xp, n_coins)
 
