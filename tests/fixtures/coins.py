@@ -38,7 +38,7 @@ def underlying_coins(_underlying_coins, _base_coins):
 
 @pytest.fixture(scope="module")
 def lp_token(pool_data):
-    return Contract.from_explorer(pool_data['lp_token_address'])
+    return interface.CurveLpToken(pool_data['lp_token_address'])
 
 
 # private API below
