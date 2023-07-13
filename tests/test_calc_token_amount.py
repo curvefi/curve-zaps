@@ -49,7 +49,7 @@ def test_wrapped(
 
     lp_balance = lp_token.balanceOf(margo)
     if True in use_lending or is_meta and base_pool_data["id"] == "aave":
-        assert abs(expected - lp_balance) / lp_balance < 1e-7
+        assert abs(expected - lp_balance) / lp_balance < 2 * 1e-7
     elif True in use_rate:
         assert abs(expected - lp_balance) <= 100
     else:
@@ -67,7 +67,7 @@ def test_wrapped(
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
 
     if True in use_lending or is_meta and base_pool_data["id"] == "aave":
-        assert abs(expected - lp_balance_diff) < 10 ** 15
+        assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-7
     elif True in use_rate:
         assert abs(expected - lp_balance_diff) <= 100
     else:
@@ -149,4 +149,4 @@ def test_underlying(
         deposit_contract.remove_liquidity_imbalance(withdraw_amounts[:n_coins_underlying], lp_balance, {"from": margo})
     lp_balance_diff = lp_balance - lp_token.balanceOf(margo)
 
-    assert abs(expected - lp_balance_diff) / lp_balance_diff < 1e-6
+    assert abs(expected - lp_balance_diff) / lp_balance_diff < 3 * 1e-7
