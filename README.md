@@ -92,7 +92,7 @@ PLAIN: 2pool + wsteth (uses rate)
 **avalanche**
 ```bash
 LENDING: aave,aaveV3
-FACTORY META: factory-v2-66
+FACTORY META: factory-v2-99,factory-v2-66
 ```
 
 ### Deploy
