@@ -144,9 +144,11 @@ def _get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256
     assert dy > 0, "do not exchange 0 coins"
 
     precisions: DynArray[uint256, MAX_COINS] = []
+    xp: DynArray[uint256, MAX_COINS] = []
     for k in range(MAX_COINS):
         if k == n_coins:
             break
+        xp.append(Curve(pool).balances(k))
         coin: address = Curve(pool).coins(k)
         precisions.append(10**(18 - ERC20(coin).decimals()))
 
@@ -158,11 +160,6 @@ def _get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256
             price_scale.append(Curve2(pool).price_scale())
             break
         price_scale.append(Curve(pool).price_scale(k))
-    xp: DynArray[uint256, MAX_COINS] = []
-    for k in range(MAX_COINS):
-        if k == n_coins:
-            break
-        xp.append(Curve(pool).balances(k))
 
     if n_coins == 3:
         return self._get_dx_3_coins(pool, i, j, dy, xp, precisions, price_scale)
