@@ -206,7 +206,7 @@ INIT_DATA = {
 
 
 @pytest.fixture(scope="module")
-def zap(StableCalcZap, alice, network, max_coins):
+def stable_calc_zap(StableCalcZap, alice, network, max_coins):
     use_int128 = INIT_DATA[network]["use_int128"]
     pool_type_addresses = INIT_DATA[network]["pool_type_addresses"]
     pool_types = INIT_DATA[network]["pool_types"]

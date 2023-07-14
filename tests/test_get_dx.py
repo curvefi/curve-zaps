@@ -44,7 +44,7 @@ def _max_amounts(swap_contract, decimals, is_meta_underlying=False):
 @given(wrapped_amounts=strategy('uint256[5]', min_value=10**16, max_value=10**6 * 10**18))
 @settings(deadline=timedelta(seconds=1000))
 def test_wrapped(
-        zap,
+        stable_calc_zap,
         pool_data,
         swap_address,
         margo,
@@ -71,9 +71,9 @@ def test_wrapped(
 
             desired = _wrapped_amounts[j]
             if is_meta:
-                dx = zap.get_dx_meta(swap_address, i, j, desired, n_coins_wrapped, base_pool_data.get("swap_address"))
+                dx = stable_calc_zap.get_dx_meta(swap_address, i, j, desired, n_coins_wrapped, base_pool_data.get("swap_address"))
             else:
-                dx = zap.get_dx(swap_address, i, j, desired, n_coins_wrapped)
+                dx = stable_calc_zap.get_dx(swap_address, i, j, desired, n_coins_wrapped)
             if dx == 0:
                 continue
             dy = swap_contract.get_dy(i, j, dx)
@@ -90,7 +90,7 @@ def test_wrapped(
 @settings(deadline=timedelta(seconds=1000))
 def test_underlying(
         pool_data,
-        zap,
+        stable_calc_zap,
         swap_address,
         deposit_address,
         n_coins_underlying,
@@ -135,9 +135,9 @@ def test_underlying(
             if is_meta:
                 base_pool = base_pool_data.get("swap_address")
                 base_token = base_pool_data.get("lp_token_address")
-                dx = zap.get_dx_meta_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
+                dx = stable_calc_zap.get_dx_meta_underlying(swap_address, i, j, desired, n_coins_underlying, base_pool, base_token)
             else:
-                dx = zap.get_dx_underlying(swap_address, i, j, desired, n_coins_underlying)
+                dx = stable_calc_zap.get_dx_underlying(swap_address, i, j, desired, n_coins_underlying)
             if dx == 0:
                 continue
 
