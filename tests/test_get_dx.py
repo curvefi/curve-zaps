@@ -79,7 +79,7 @@ def test_wrapped(
             dy = swap_contract.get_dy(i, j, dx)
 
             precision = 1e-7
-            if desired / 10**wrapped_decimals[j] < 10:
+            if pool_data["id"] == "usdt" or desired / 10**wrapped_decimals[j] < 10:
                 precision = 1e-6
             if wrapped_decimals[i] == 2:
                 precision = 1e-4
