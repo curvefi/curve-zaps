@@ -170,12 +170,33 @@ def _get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256
 @external
 @view
 def get_dx(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256) -> uint256:
+    """
+    @notice Calculate the input amount required to receive the desired output amount.
+    @param pool Address of the pool
+    @param i Input coin index
+    @param j Output coin index
+    @param dy Desired amount of the coin going out
+    @param n_coins Number of coins in the pool
+    @return Required input amount
+    """
     return self._get_dx(pool, i, j, dy, n_coins)
 
 
 @external
 @view
 def get_dx_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
+    """
+    @notice Calculate the input amount required to receive the desired output amount.
+            For underlying calculations in meta pool of a type [coin, stable-pool-LP].
+    @param pool Address of the pool
+    @param i Input coin index
+    @param j Output coin index
+    @param dy Desired amount of the coin going out
+    @param n_coins Number of coins in the pool
+    @param base_pool Address of the base pool
+    @param base_token Address of the base pool's LP token
+    @return Required input amount
+    """
     # [coin] + [...n_meta_coins...]
     if i > 0 and j > 0:  # meta_coin1 -> meta_coin2
         return StableCalcZap(STABLE_CALC_ZAP).get_dx_underlying(base_pool, convert(i - 1, int128), convert(j - 1, int128), dy, n_coins - 1)
@@ -224,6 +245,21 @@ def _get_dx_tricrypto_meta_underlying(pool: address, i: uint256, j: uint256, dy:
 @external
 @view
 def get_dx_tricrypto_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n_coins: uint256, base_pool: address, base_token: address) -> uint256:
+    """
+    @notice Calculate the input amount required to receive the desired output amount.
+            For underlying calculations in meta pool of a type [stable-pool-LP, coin1, coin2].
+            xDAI (Gnosis): tricrypto
+            Polygon: atricrypto3
+            Avalanche: atricrypto, avaxcrypto
+    @param pool Address of the pool
+    @param i Input coin index
+    @param j Output coin index
+    @param dy Desired amount of the coin going out
+    @param n_coins Number of coins in the pool
+    @param base_pool Address of the base pool
+    @param base_token Address of the base pool's LP token
+    @return Required input amount
+    """
     return self._get_dx_tricrypto_meta_underlying(pool, i, j, dy, n_coins, base_pool, base_token)
 
 
@@ -239,6 +275,20 @@ def get_dx_double_meta_underlying(
         second_base_pool: address,
         second_base_token: address,
 ) -> uint256:
+    """
+    @notice Calculate the input amount required to receive the desired output amount.
+            For underlying calculations in double meta pool of a type [coin, tricrypto-meta-pool-LP].
+            Polygon: crv/tricrypto and wmatic/tricrypto.
+    @param pool Address of the pool
+    @param i Input coin index
+    @param j Output coin index
+    @param dy Desired amount of the coin going out
+    @param base_pool Address of the base pool
+    @param base_pool_zap Address of the base pool's zap for underlying calc_token_amount
+    @param second_base_pool Address of the second base pool
+    @param second_base_token Address of the second base pool's LP token
+    @return Required input amount
+    """
     # [coin] + [...n_meta_coins...]
     if i > 0 and j > 0:  # meta_coin1 -> meta_coin2
         return self._get_dx_tricrypto_meta_underlying(base_pool, i - 1, j - 1, dy, 5, second_base_pool, second_base_token)
