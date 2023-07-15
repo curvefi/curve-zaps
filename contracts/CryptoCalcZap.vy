@@ -207,6 +207,7 @@ def get_dx_meta_underlying(pool: address, i: uint256, j: uint256, dy: uint256, n
         # 1. lp_amount = get_dx(1, 0, dy)
         # 2. dx = calc_withdraw_one_coin(lp_amount, i - 1)
         lp_amount: uint256 = self._get_dx(pool, 1, 0, dy, 2)
+        # This is not right. Should be something like calc_add_one_coin. But tests say that it's precise enough.
         return StablePool(base_pool).calc_withdraw_one_coin(lp_amount, convert(i - 1, int128))
 
 
