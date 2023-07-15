@@ -58,6 +58,11 @@ LENDING: aave,saave,ib,usdt,compound
 META: gusd,usdk,musd,rsv,dusd,usdp + rai (use rate)
 FACTORY PLAIN: factory-v2-283,factory-v2-66,factory-v2-235 + factory-v2-303 (pool_type 10)
 FACTORY META: tusd + factory-v2-9,factory-v2-144,factory-v2-247
+
+#---------------
+
+CRYPTO PLAIN: tricrypto2,eursusd,crveth,cvxeth,spelleth,teth,factory-crypto-37,factory-crypto-204
+CRYPTO META: eurtusd,euroc,factory-crypto-116,factory-crypto-136
 ```
 
 **optimism**
@@ -69,12 +74,22 @@ PLAIN: 3pool + wsteth (uses rate)
 ```bash
 PLAIN: 3pool
 META: rai (uses rate)
+
+#---------------
+
+CRYPTO META: eureusd
+TRICRYPTO META: tricrypto
 ```
 
 **polygon**
 ```bash
 LENDING: aave
 FACTORY META: factory-v2-107,factory-v2-339
+
+#---------------
+
+TRICRYPTO META: atricrypto3
+TRICRYPTO DOUBLE META: crv-tricrypto, wmatic-tricrypto
 ```
 
 **fantom**
@@ -82,17 +97,30 @@ FACTORY META: factory-v2-107,factory-v2-339
 PLAIN: 2pool
 META: fusdt
 LENDING: ib,geist
+
+#---------------
+
+CRYPTO: tricrypto,factory-crypto-7
 ```
 
 **arbitrum**
 ```bash
 PLAIN: 2pool + wsteth (uses rate)
+
+#---------------
+
+CRYPTO PLAIN: tricrypto
+CRYPTO META: eursusd
 ```
 
 **avalanche**
 ```bash
 LENDING: aave,aaveV3
 FACTORY META: factory-v2-99,factory-v2-66
+
+#---------------
+
+TRICYPTO META: atricrypto,avaxcrypto
 ```
 
 ### Deploy
