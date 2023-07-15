@@ -40,17 +40,11 @@ interface AtricryptoZap:
     def calc_withdraw_one_coin(token_amount: uint256, i: uint256) -> uint256: view
 
 
-STABLE_CALC_ZAP: constant(address) = 0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF
+STABLE_CALC_ZAP: constant(address) = 0xCA8d0747B5573D69653C3aC22242e6341C36e4b4
+MATH2: constant(address) = 0x69522fb5337663d3B4dFB0030b881c1A750Adb4f
+MATH3: constant(address) = 0x4f37A9d177470499A2dD084621020b023fcffc1F
 MAX_COINS: constant(uint256) = 10
 PRECISION: constant(uint256) = 10**18  # The precision to convert to
-math2: immutable(address)
-math3: immutable(address)
-
-
-@external
-def __init__(_math2: address, _math3: address):
-    math2 = _math2
-    math3 = _math3
 
 
 @internal
@@ -72,7 +66,7 @@ def _get_dx_2_coins(
         xp[1] * price_scale[0] * precisions[1] / PRECISION,
     ]
     if Curve(pool).future_A_gamma_time() > 0:
-        D = Math2(math2).newton_D(A, gamma, _xp_initial)
+        D = Math2(MATH2).newton_D(A, gamma, _xp_initial)
 
     _fee: uint256 = 0
     x: uint256 = 0
@@ -81,9 +75,9 @@ def _get_dx_2_coins(
         _xp[j] -= dy * 10 ** 10 / (10 ** 10 - _fee)
         _xp[0] *= precisions[0]
         _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
-        x = Math2(math2).newton_y(A, gamma, _xp, D, i)
+        x = Math2(MATH2).newton_y(A, gamma, _xp, D, i)
         _xp[i] = x
-        _fee = Math2(math2).fee_calc(pool, _xp)
+        _fee = Math2(MATH2).fee_calc(pool, _xp)
 
     dx: uint256 = x - _xp_initial[i] + 1
     if i > 0:
@@ -113,7 +107,7 @@ def _get_dx_3_coins(
         xp[2] * price_scale[1] * precisions[2] / PRECISION,
     ]
     if Curve(pool).future_A_gamma_time() > 0:
-        D = Math3(math3).newton_D(A, gamma, _xp_initial)
+        D = Math3(MATH3).newton_D(A, gamma, _xp_initial)
 
     # Calc new balances without fees
 
@@ -125,7 +119,7 @@ def _get_dx_3_coins(
         _xp[0] *= precisions[0]
         _xp[1] = _xp[1] * price_scale[0] * precisions[1] / PRECISION
         _xp[2] = _xp[2] * price_scale[1] * precisions[2] / PRECISION
-        x = Math3(math3).newton_y(A, gamma, _xp, D, i)
+        x = Math3(MATH3).newton_y(A, gamma, _xp, D, i)
         _xp[i] = x
         _fee = Curve(pool).fee_calc(_xp)
 
