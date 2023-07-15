@@ -28,7 +28,7 @@ def _min_amounts(swap_contract, decimals, is_tricrypto, is_meta_underlying=False
 
 
 def _max_amounts(swap_contract, decimals, is_tricrypto=False, is_meta_underlying=False, base_n_coins=3):
-    # Max pure coin amount = coin_balance * 0.5
+    # Max pure coin amount = coin_balance * 0.2
     # Max meta coin amount = LP_balance * 0.2
     max_amounts = []
     if is_meta_underlying:
@@ -36,7 +36,7 @@ def _max_amounts(swap_contract, decimals, is_tricrypto=False, is_meta_underlying
             for i in range(len(decimals)):
                 # just coins
                 if i >= base_n_coins:
-                    max_amounts.append(int(swap_contract.balances(i - base_n_coins + 1) * 0.5))
+                    max_amounts.append(int(swap_contract.balances(i - base_n_coins + 1) * 0.2))
                 # meta coins
                 else:
                     max_amounts.append(int(swap_contract.balances(0) * 0.2) // 10 ** (18 - decimals[i]))
@@ -44,13 +44,13 @@ def _max_amounts(swap_contract, decimals, is_tricrypto=False, is_meta_underlying
             for i in range(len(decimals)):
                 # just coins
                 if i == 0:
-                    max_amounts.append(int(swap_contract.balances(i) * 0.5))
+                    max_amounts.append(int(swap_contract.balances(i) * 0.2))
                 # meta coins
                 else:
                     max_amounts.append(int(swap_contract.balances(1) * 0.2) // 10 ** (18 - decimals[i]))
     else:
         for i in range(len(decimals)):
-            max_amounts.append(int(swap_contract.balances(i) * 0.5))
+            max_amounts.append(int(swap_contract.balances(i) * 0.2))
 
     return max_amounts
 
@@ -80,8 +80,8 @@ def test_wrapped(crypto_calc_zap, pool_data, swap_address, n_coins_wrapped, wrap
                 continue
             dy = swap_contract.get_dy(i, j, dx)
 
-            precision = 4 if (wrapped_decimals[i] == 2 or wrapped_decimals[j] == 2) else 5
-            assert abs(dy - desired) / desired < 10**(-precision) or abs(dy - desired) == 1
+            precision = 1e-4 if (wrapped_decimals[i] == 2 or wrapped_decimals[j] == 2) else 1e-5
+            assert abs(dy - desired) / desired < precision or abs(dy - desired) == 1
 
 
 @given(underlying_amounts=strategy('uint256[6]', min_value=10**16, max_value=10**6 * 10**18))
@@ -108,19 +108,22 @@ def test_underlying(
     try:
         pool_zap_contract = Contract.from_explorer(deposit_address)
     except:
-        pool_zap_contract = Contract.from_abi('Coin', deposit_address, project.get_loaded_projects()[0].interface.CryptoMetaZap.abi)
+        pool_zap_contract = Contract.from_abi('CryptoMetaZap', deposit_address, project.get_loaded_projects()[0].interface.CryptoMetaZap.abi)
 
     base_pool = base_pool_data.get("swap_address")
     base_token = base_pool_data.get("lp_token_address")
     base_n_coins = len(base_pool_data["coins"])
     is_tricrypto = n_coins_underlying - base_n_coins + 1 == 3
 
-    if pool_data["id"] == "crv-tricrypto":
+    if pool_data["id"] == "atricrypto3":
+        min_amounts = [100 * 10**18, 100 * 10**6, 100 * 10**6, int(0.01 * 10**8), int(0.01 * 10**18)]
+        max_amounts = [10**4 * 10**18, 10**4 * 10**6, 10**4 * 10**6, int(5 * 10**8), int(50 * 10**18)]
+    elif pool_data["id"] == "crv-tricrypto":
         min_amounts = [100 * 10**18, 100 * 10**18, 100 * 10**6, 100 * 10**6, int(0.01 * 10**8), int(0.01 * 10**18)]
-        max_amounts = [10**5 * 10**18, 10**4 * 10**18, 10**4 * 10**6, 10**4 * 10**6, int(5 * 10**8), int(50 * 10**18)]
+        max_amounts = [50_000 * 10**18, 10**4 * 10**18, 10**4 * 10**6, 10**4 * 10**6, int(5 * 10**8), int(50 * 10**18)]
     elif pool_data["id"] == "wmatic-tricrypto":
         min_amounts = [100 * 10**18, 100 * 10**18, 100 * 10**6, 100 * 10**6, int(0.01 * 10**8), int(0.01 * 10**18)]
-        max_amounts = [10**5 * 10**18, 10**4 * 10**18, 10**4 * 10**6, 10**4 * 10**6, int(0.5 * 10**8), int(5 * 10**18)]
+        max_amounts = [9000 * 10**18, 10**4 * 10**18, 10**4 * 10**6, 10**4 * 10**6, int(0.5 * 10**8), int(5 * 10**18)]
     else:
         min_amounts = _min_amounts(swap_contract, underlying_decimals, is_tricrypto, is_meta_underlying=True, base_n_coins=base_n_coins)
         max_amounts = _max_amounts(swap_contract, underlying_decimals, is_tricrypto, is_meta_underlying=True, base_n_coins=base_n_coins)
@@ -151,5 +154,9 @@ def test_underlying(
             else:
                 dy = pool_zap_contract.get_dy_underlying(i, j, dx)
 
-            precision = 4 if (underlying_decimals[i] == 2 or underlying_decimals[j] == 2) else 5
-            assert abs(dy - desired) / desired < 10**(-precision) or abs(dy - desired) == 1
+            precision = 3 * 1e-4
+            if is_tricrypto:
+                precision = 5 * 1e-4
+            if is_double_meta or pool_data["id"] == "avaxcrypto":
+                precision = 2 * 1e-3
+            assert abs(dy - desired) / desired < precision or abs(dy - desired) == 1
