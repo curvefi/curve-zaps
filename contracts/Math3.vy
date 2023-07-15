@@ -46,8 +46,8 @@ def _geometric_mean(unsorted_x: uint256[N_COINS], sort: bool = True) -> uint256:
     x: uint256[N_COINS] = unsorted_x
     if sort:
         x = self.sort(x)
-    D: uint256 = x[0]
     diff: uint256 = 0
+    D: uint256 = x[0]
     for i in range(255):
         D_prev: uint256 = D
         tmp: uint256 = 10**18

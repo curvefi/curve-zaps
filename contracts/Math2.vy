@@ -27,8 +27,8 @@ def geometric_mean(unsorted_x: uint256[N_COINS], sort: bool) -> uint256:
     x: uint256[N_COINS] = unsorted_x
     if sort and x[0] < x[1]:
         x = [unsorted_x[1], unsorted_x[0]]
-    D: uint256 = x[0]
     diff: uint256 = 0
+    D: uint256 = x[0]
     for i in range(255):
         D_prev: uint256 = D
         # tmp: uint256 = 10**18
