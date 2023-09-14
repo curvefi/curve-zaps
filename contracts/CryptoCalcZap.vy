@@ -1,7 +1,11 @@
 # @version 0.3.7
 
-# A "zap" for crypto pools to get_dx
-# (c) Curve.Fi, 2023
+"""
+@title CurveCryptoCalc
+@author Curve.Fi
+@license Copyright (c) Curve.Fi, 2020-2023 - all rights reserved
+@notice A "zap" for crypto pools to get_dx
+"""
 
 interface ERC20:
     def decimals() -> uint256: view
