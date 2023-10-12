@@ -77,8 +77,11 @@ INIT_DATA = {
 
             [False, True, False, False, False],   # wBETH
         ],
-        "factory": "0xb9fc157394af804a3578134a6585c0dc9cc990d4",
-        "eth_implementation": "0x847ee1227A9900B73aEeb3a47fAc92c52FD54ed9",
+        "stored_rates_implementations": [
+            # [factory_address, implementation_address]
+            ["0xb9fc157394af804a3578134a6585c0dc9cc990d4", "0x847ee1227A9900B73aEeb3a47fAc92c52FD54ed9"],
+            ["0x4F8846Ae9380B90d2E71D5e3D042dff3E7ebb40d", "0x36Dc03C0e12a1C241306a6A8F327Fe28bA2Be5b0"],
+        ],
     },
     "optimism": {
         "use_int128": [],
@@ -91,8 +94,7 @@ INIT_DATA = {
         "use_rate": [
             [False, True, False, False, False],   # wstETH
         ],
-        "factory": "0x2db0E83599a91b508Ac268a6197b8B14F5e72840",
-        "eth_implementation": "0x6F9fb833501f46CBE6f6A4b6Cf32C834E5A5e8C5",
+        "stored_rates_implementations": [["0x2db0E83599a91b508Ac268a6197b8B14F5e72840", "0x6F9fb833501f46CBE6f6A4b6Cf32C834E5A5e8C5"]],
     },
     "xdai": {
         "use_int128": [],
@@ -105,8 +107,7 @@ INIT_DATA = {
         "use_rate": [
             [True, False, False, False, False],   # rai
         ],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
     "polygon": {
         "use_int128": [],
@@ -119,8 +120,7 @@ INIT_DATA = {
         "use_rate": [
             [False, False, False, False, False],   # aave
         ],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
     "fantom": {
         "use_int128": [],
@@ -139,24 +139,21 @@ INIT_DATA = {
 
             [True, True, True, False, False],     # ib
         ],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
     "moonbeam": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
     "kava": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
     "arbitrum": {
         "use_int128": [],
@@ -169,16 +166,14 @@ INIT_DATA = {
         "use_rate": [
             [False, True, False, False, False],   # wstETH
         ],
-        "factory": "0xb17b674D9c5CB2e441F8e196a2f048A81355d031",
-        "eth_implementation": "0x6F9fb833501f46CBE6f6A4b6Cf32C834E5A5e8C5",
+        "stored_rates_implementations": [["0xb17b674D9c5CB2e441F8e196a2f048A81355d031", "0x6F9fb833501f46CBE6f6A4b6Cf32C834E5A5e8C5"]],
     },
     "celo": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
     "avalanche": {
         "use_int128": [],
@@ -194,24 +189,21 @@ INIT_DATA = {
             [False, False, False, False, False],   # aave
             [False, False, False, False, False],   # aaveV3
         ],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
     "aurora": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
     "base": {
         "use_int128": [],
         "pool_type_addresses": [],
         "pool_types": [],
         "use_rate": [],
-        "factory": "0x0000000000000000000000000000000000000000",
-        "eth_implementation": "0x0000000000000000000000000000000000000000",
+        "stored_rates_implementations": [],
     },
 }
 
@@ -232,8 +224,7 @@ def main():
     pool_type_addresses = INIT_DATA[network_name]["pool_type_addresses"]
     pool_types = INIT_DATA[network_name]["pool_types"]
     use_rate = INIT_DATA[network_name]["use_rate"]
-    factory = INIT_DATA[network_name]["factory"]
-    eth_implementation = INIT_DATA[network_name]["eth_implementation"]
+    stored_rates_implementations = INIT_DATA[network_name]["stored_rates_implementations"]
 
     use_int128 += [ZERO_ADDRESS] * (20 - len(use_int128))
     pool_type_addresses += [ZERO_ADDRESS] * (20 - len(pool_type_addresses))
@@ -245,9 +236,9 @@ def main():
         f"{network_name.upper()} CalcTokenAmount Zap constructor arguments:",
         encode(
             ["address[20]", "address[20]", "uint8[20]", f"bool[{max_coins}][20]", "address", "address"],
-            [use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation],
+            [use_int128, pool_type_addresses, pool_types, use_rate, stored_rates_implementations],
         ).hex(),
     )
 
     txparams.update({'from': accounts[0]})
-    return StableCalcZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, factory, eth_implementation, txparams)
+    return StableCalcZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, stored_rates_implementations, txparams)

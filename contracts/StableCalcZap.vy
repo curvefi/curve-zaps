@@ -59,6 +59,11 @@ interface Factory:
     def get_implementation_address(_pool: address) -> address: view
 
 
+struct StoredRatesImplementations:
+    factory: address
+    implementation: address
+
+
 MAX_COINS: constant(uint256) = 10
 MAX_COINS_INT128: constant(int128) = 10
 FALSE_ARRAY: constant(bool[10]) = [False, False, False, False, False, False, False, False, False, False]
@@ -68,9 +73,7 @@ FEE_DENOMINATOR: constant(uint256) = 10 ** 10
 USE_INT128: HashMap[address, bool]
 POOL_TYPE: HashMap[address, uint8]
 USE_RATE: HashMap[address, bool[MAX_COINS]]
-FACTORY: address
-ETH_IMPLEMENTATION: address
-
+STORED_RATES_IMPLEMENTATIONS: DynArray[StoredRatesImplementations, 2]
 
 @external
 def __init__(
@@ -78,8 +81,7 @@ def __init__(
         _pool_type_addresses: address[20],
         _pool_types: uint8[20],
         _use_rate: bool[MAX_COINS][20],
-        _factory: address,
-        _eth_implementation: address,
+        _stored_rates_implementations: DynArray[StoredRatesImplementations, 2],
     ):
     """
     @notice CalcTokenAmountZap constructor
@@ -87,8 +89,7 @@ def __init__(
     @param _pool_type_addresses Addresses of pools which use rates
     @param _pool_types Types of pools using rates (from 2 to 10)
     @param _use_rate Lists of bools where True means that for the coin we use rate
-    @param _factory Address of the stable factory
-    @param _eth_implementation Implementation address for ETH pools with oracle
+    @param _stored_rates_implementations Factory addresses and implementation addresses with stored_rates() method
     """
     for addr in _use_int128:
         if addr == empty(address):
@@ -101,8 +102,7 @@ def __init__(
         self.POOL_TYPE[_pool_type_addresses[i]] = _pool_types[i]
         self.USE_RATE[_pool_type_addresses[i]] = _use_rate[i]
 
-    self.FACTORY = _factory
-    self.ETH_IMPLEMENTATION = _eth_implementation
+    self.STORED_RATES_IMPLEMENTATIONS = _stored_rates_implementations
 
 
 @internal
@@ -429,8 +429,8 @@ def _underlying_precision(i: int128, pool_type: uint8, coins: address[MAX_COINS]
 @internal
 @view
 def _pool_type(pool: address) -> uint8:
-    if self.FACTORY != empty(address):
-        if Factory(self.FACTORY).get_implementation_address(pool) == self.ETH_IMPLEMENTATION:
+    for item in self.STORED_RATES_IMPLEMENTATIONS:
+        if Factory(item.factory).get_implementation_address(pool) == item.implementation:
             return 10
 
     return self.POOL_TYPE[pool]
