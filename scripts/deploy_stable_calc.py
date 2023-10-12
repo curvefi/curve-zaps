@@ -235,7 +235,7 @@ def main():
     print(
         f"{network_name.upper()} CalcTokenAmount Zap constructor arguments:",
         encode(
-            ["address[20]", "address[20]", "uint8[20]", f"bool[{max_coins}][20]", "address", "address"],
+            ["address[20]", "address[20]", "uint8[20]", f"bool[{max_coins}][20]", "address[2][2]"],
             [use_int128, pool_type_addresses, pool_types, use_rate, stored_rates_implementations],
         ).hex(),
     )

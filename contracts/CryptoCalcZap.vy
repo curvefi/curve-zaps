@@ -1,7 +1,7 @@
 # @version 0.3.7
 
 """
-@title CurveCryptoCalc
+@title CurveCryptoCalcZap
 @author Curve.Fi
 @license Copyright (c) Curve.Fi, 2020-2023 - all rights reserved
 @notice A "zap" for crypto pools to get_dx

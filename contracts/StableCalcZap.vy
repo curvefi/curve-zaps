@@ -1,7 +1,7 @@
 # @version 0.3.7
 
 """
-@title CurveStableCalc
+@title CurveStableCalcZap
 @author Curve.Fi
 @license Copyright (c) Curve.Fi, 2020-2023 - all rights reserved
 @notice A "zap" for stable pools to calc_token_amount taking fees into account and to get_dx
