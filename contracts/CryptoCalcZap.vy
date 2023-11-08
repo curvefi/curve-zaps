@@ -1,4 +1,4 @@
-# @version 0.3.7
+# @version 0.3.9
 
 """
 @title CurveCryptoCalcZap
@@ -44,11 +44,22 @@ interface AtricryptoZap:
     def calc_withdraw_one_coin(token_amount: uint256, i: uint256) -> uint256: view
 
 
-STABLE_CALC_ZAP: constant(address) = 0xCA8d0747B5573D69653C3aC22242e6341C36e4b4
-MATH2: constant(address) = 0x69522fb5337663d3B4dFB0030b881c1A750Adb4f
-MATH3: constant(address) = 0x4f37A9d177470499A2dD084621020b023fcffc1F
+STABLE_CALC_ZAP: public(immutable(address))
+MATH2: public(immutable(address))
+MATH3: public(immutable(address))
 MAX_COINS: constant(uint256) = 10
 PRECISION: constant(uint256) = 10**18  # The precision to convert to
+
+
+@external
+def __init__(
+        _stable_calc_zap: address,
+        _math2: address,
+        _math3: address,
+):
+    STABLE_CALC_ZAP = _stable_calc_zap
+    MATH2 = _math2
+    MATH3 = _math3
 
 
 @internal
