@@ -3,6 +3,18 @@
 from brownie import network
 from brownie import CryptoCalcZap, accounts
 
+# STABLE_CALC_ZAP: constant(address) = 0xCA8d0747B5573D69653C3aC22242e6341C36e4b4
+# MATH2: constant(address) = 0x69522fb5337663d3B4dFB0030b881c1A750Adb4f
+# MATH3: constant(address) = 0x4f37A9d177470499A2dD084621020b023fcffc1F
+
+ADDRESSES = {
+    "bsc": {
+        "stable_calc_zap": "0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF",
+        "math2": "0xCA8d0747B5573D69653C3aC22242e6341C36e4b4",
+        "math3": "0xEfadDdE5B43917CcC738AdE6962295A0B343f7CE",
+    }
+}
+
 
 def main():
     txparams = {}
@@ -15,5 +27,6 @@ def main():
     elif not network_name.endswith("-fork"):
         accounts.load('curve-deployer')
 
+    addresses = ADDRESSES[network_name]
     txparams.update({'from': accounts[0]})
-    return CryptoCalcZap.deploy(txparams)
+    return CryptoCalcZap.deploy(addresses["stable_calc_zap"], addresses["math2"], addresses["math3"], txparams)
