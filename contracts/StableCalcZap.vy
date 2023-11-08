@@ -1,4 +1,4 @@
-# @version 0.3.7
+# @version 0.3.9
 
 """
 @title CurveStableCalcZap
@@ -74,6 +74,7 @@ USE_INT128: HashMap[address, bool]
 POOL_TYPE: HashMap[address, uint8]
 USE_RATE: HashMap[address, bool[MAX_COINS]]
 STORED_RATES_IMPLEMENTATIONS: DynArray[StoredRatesImplementations, 2]
+
 
 @external
 def __init__(
