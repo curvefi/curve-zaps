@@ -205,6 +205,13 @@ INIT_DATA = {
         "use_rate": [],
         "stored_rates_implementations": [],
     },
+    "bsc": {
+        "use_int128": [],
+        "pool_type_addresses": [],
+        "pool_types": [],
+        "use_rate": [],
+        "stored_rates_implementations": [],
+    },
 }
 
 
@@ -231,14 +238,6 @@ def main():
     pool_types += [0] * (20 - len(pool_types))
     use_rate = [x + [False] * (max_coins - len(x)) for x in use_rate]
     use_rate += [[False] * max_coins] * (20 - len(use_rate))
-
-    print(
-        f"{network_name.upper()} CalcTokenAmount Zap constructor arguments:",
-        encode(
-            ["address[20]", "address[20]", "uint8[20]", f"bool[{max_coins}][20]", "address[2][2]"],
-            [use_int128, pool_type_addresses, pool_types, use_rate, stored_rates_implementations],
-        ).hex(),
-    )
 
     txparams.update({'from': accounts[0]})
     return StableCalcZap.deploy(use_int128, pool_type_addresses, pool_types, use_rate, stored_rates_implementations, txparams)
