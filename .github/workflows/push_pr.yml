@@ -13,6 +13,28 @@ jobs:
         id: get_version
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
+      - name: Checkout to repo
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Create release file
+        run: |
+          TITLE='${{ github.event.release.name }}'
+          NOTES='${{ github.event.release.body }}'
+          DATE=$(date '+%d-%m-%Y')
+          mkdir -p deployments
+          echo $NOTES >> "deployments/release-$TITLE-$DATE.txt"
+
+          git config user.email "curvefi@users.noreply.github.com"
+          git config user.name "curvefi"
+          git remote update
+          git fetch
+          git checkout master
+          git add deployments
+          git commit -m "chore: add release file - $TITLE"
+          git push
+
       - name: Checkout to other repo
         uses: actions/checkout@v3
         with:
@@ -29,7 +51,7 @@ jobs:
           BRANCH_NAME="deployment-$CURRENT_REPOSITORY-$TAG"
 
           # Setup the committers identity.
-          git config user.email "Curve@users.noreply.github.com"
+          git config user.email "Curvefi@users.noreply.github.com"
           git config user.name "Curvefi"
 
           # Create a new feature branch for the changes.
