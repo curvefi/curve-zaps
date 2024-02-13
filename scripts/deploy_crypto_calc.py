@@ -12,6 +12,11 @@ ADDRESSES = {
         "stable_calc_zap": "0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF",
         "math2": "0xCA8d0747B5573D69653C3aC22242e6341C36e4b4",
         "math3": "0xEfadDdE5B43917CcC738AdE6962295A0B343f7CE",
+    },
+    "fraxtal": {
+        "stable_calc_zap": "0xCA8d0747B5573D69653C3aC22242e6341C36e4b4",
+        "math2": "0xEfadDdE5B43917CcC738AdE6962295A0B343f7CE",
+        "math3": "0xd6681e74eEA20d196c15038C580f721EF2aB6320",
     }
 }
 
