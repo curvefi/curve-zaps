@@ -2,7 +2,7 @@ on:
   release:
     types: [ created ]
 
-name: on-creating-new-tag
+name: push-changes-on-release
 
 jobs:
   send-pull-requests:
@@ -20,8 +20,8 @@ jobs:
 
       - name: Create release file
         run: |
-          TITLE='${{ github.event.release.name }}'
-          NOTES='${{ github.event.release.body }}'
+          TITLE="${{ github.event.release.name }}"
+          NOTES="${{ github.event.release.body }}"
           DATE=$(date '+%d-%m-%Y')
           mkdir -p deployments
           echo $NOTES >> "deployments/release-$TITLE-$DATE.txt"
@@ -35,7 +35,7 @@ jobs:
           git commit -m "chore: add release file - $TITLE"
           git push
 
-      - name: Checkout to other repo
+      - name: Checkout to curve-js
         uses: actions/checkout@v3
         with:
           repository: curvefi/curve-js
@@ -45,7 +45,7 @@ jobs:
         run: |
           TAG=${{ env.RELEASE_VERSION }}
           ORG="curvefi"
-          CURRENT_REPOSITORY="$ORG/curve-zaps"
+          CURRENT_REPOSITORY="${{ github.repository }}"
           REPOSITORY="$ORG/curve-js"
           FOLDER="bin/$REPOSITORY"
           BRANCH_NAME="deployment-$CURRENT_REPOSITORY-$TAG"
@@ -68,7 +68,7 @@ jobs:
           # create a pull-requests containing the updates.
           gh auth login --with-token < token.txt
           gh pr create \
-            --body "Link to release: https://github.com/$CURRENT_REPOSITORY/releases/tag/$TAG" \
+            --body "${{ github.event.release.body }}" \
             --title "Deployment from $CURRENT_REPOSITORY - $TAG" \
             --head "$BRANCH_NAME" \
             --base "master"
