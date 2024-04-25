@@ -15,6 +15,7 @@
   - Base: [0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7](https://basescan.org/address/0x5552b631e2aD801fAa129Aacf4B701071cC9D1f7#code)
   - BSC: [0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF](https://bscscan.com/address/0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF#code)
   - Fraxtal: [0xCA8d0747B5573D69653C3aC22242e6341C36e4b4](https://fraxscan.com/address/0xCA8d0747B5573D69653C3aC22242e6341C36e4b4#code)
+  - X Layer: [0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF](https://www.oklink.com/ru/xlayer/address/0x0fe38dcc905ec14f6099a83ac5c93bf2601300cf/contract)
 - CryptoCalcZap (get_dx)
   - Ethereum: [0xA72C85C258A81761433B4e8da60505Fe3Dd551CC](https://etherscan.io/address/0xA72C85C258A81761433B4e8da60505Fe3Dd551CC#code)
   - Optimism: [0xA72C85C258A81761433B4e8da60505Fe3Dd551CC](https://optimistic.etherscan.io/address/0xA72C85C258A81761433B4e8da60505Fe3Dd551CC#code)
@@ -30,6 +31,7 @@
   - Base: [0xEfadDdE5B43917CcC738AdE6962295A0B343f7CE](https://basescan.org/address/0xEfadDdE5B43917CcC738AdE6962295A0B343f7CE#code)
   - BSC: [0xd6681e74eEA20d196c15038C580f721EF2aB6320](https://bscscan.com/address/0xd6681e74eEA20d196c15038C580f721EF2aB6320#code)
   - Fraxtal: [0x69522fb5337663d3B4dFB0030b881c1A750Adb4f](https://fraxscan.com/address/0x69522fb5337663d3B4dFB0030b881c1A750Adb4f#code)
+  - X Layer: [0x69522fb5337663d3B4dFB0030b881c1A750Adb4f](https://www.oklink.com/xlayer/address/0x69522fb5337663d3b4dfb0030b881c1a750adb4f/contract)
 
 ## Testing and Development
 
