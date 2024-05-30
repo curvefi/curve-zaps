@@ -226,6 +226,13 @@ INIT_DATA = {
         "use_rate": [],
         "stored_rates_implementations": [],
     },
+    "mantle": {
+        "use_int128": [],
+        "pool_type_addresses": [],
+        "pool_types": [],
+        "use_rate": [],
+        "stored_rates_implementations": [],
+    },
 }
 
 
