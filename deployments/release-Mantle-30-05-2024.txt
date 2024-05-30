@@ -1,0 +1,1 @@
+- StableCalc: [0x0fE38dCC905eC14F6099a83Ac5C93BF2601300CF](https://mantlescan.xyz/address/0x0fe38dcc905ec14f6099a83ac5c93bf2601300cf#code) - CryptoCalc: [0xd6681e74eEA20d196c15038C580f721EF2aB6320](https://mantlescan.xyz/address/0xd6681e74eea20d196c15038c580f721ef2ab6320#code)
